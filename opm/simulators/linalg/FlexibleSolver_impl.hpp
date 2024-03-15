@@ -121,11 +121,25 @@ namespace Dune
         // Parallel case.
         linearoperator_for_solver_ = &op;
         auto child = prm.get_child_optional("preconditioner");
-        preconditioner_ = Opm::PreconditionerFactory<Operator, Comm>::create(op,
-                                                                             child ? *child : Opm::PropertyTree(),
-                                                                             weightsCalculator,
-                                                                             comm,
-                                                                             pressureIndex);
+        const std::string& type = child ? child->get<std::string>("type","ParOverILU0"):std::string("ParOverILU0");
+        if (type != "amg") {
+            preconditioner_ = Opm::PreconditionerFactory<Operator, Comm>::create(op,
+                                                                                 child ? *child : Opm::PropertyTree(),
+                                                                                 weightsCalculator,
+                                                                                 comm,
+                                                                                 pressureIndex);
+        } else {
+            using RangeType = VectorType; // Assuming symmetry: domain == range
+            using ParOperatorType = Opm::GhostLastMatrixAdapter<MatrixType, VectorType, RangeType, Comm>;
+            auto op_prec = std::make_shared<ParOperatorType>(op.getmat(), comm);
+            preconditioner_ = Opm::PreconditionerFactory<ParOperatorType, Comm>::create(*op_prec,
+                                                                                        child ? *child : Opm::PropertyTree(),
+                                                                                        weightsCalculator,
+                                                                                        comm,
+                                                                                        pressureIndex);
+            linearoperator_for_precond_ = op_prec;
+        }
+        
         scalarproduct_ = Dune::createScalarProduct<VectorType, Comm>(comm, op.category());
     }
 
@@ -141,10 +155,22 @@ namespace Dune
         // Sequential case.
         linearoperator_for_solver_ = &op;
         auto child = prm.get_child_optional("preconditioner");
-        preconditioner_ = Opm::PreconditionerFactory<Operator,Dune::Amg::SequentialInformation>::create(op,
-                                                                       child ? *child : Opm::PropertyTree(),
-                                                                       weightsCalculator,
-                                                                       pressureIndex);
+        const std::string& type = child ? child->get<std::string>("type","ParOverILU0"):std::string("ParOverILU0");
+        if (type != "amg") {
+            preconditioner_ = Opm::PreconditionerFactory<Operator,Dune::Amg::SequentialInformation>::create(op,
+                                                                           child ? *child : Opm::PropertyTree(),
+                                                                           weightsCalculator,
+                                                                           pressureIndex);
+        } else {
+            using RangeType = VectorType; // Assuming symmetry: domain == range
+            using SOT = Dune::MatrixAdapter<MatrixType, VectorType, RangeType>;
+            auto op_prec = std::make_shared<SOT>(op.getmat());
+            preconditioner_ = Opm::PreconditionerFactory<SOT,Dune::Amg::SequentialInformation>::create(*op_prec,
+                                                                      child ? *child : Opm::PropertyTree(),
+                                                                      weightsCalculator,
+                                                                      pressureIndex);
+            linearoperator_for_precond_ = op_prec;
+        }
         scalarproduct_ = std::make_shared<Dune::SeqScalarProduct<VectorType>>();
     }
 
@@ -191,7 +217,6 @@ namespace Dune
                                                                                           verbosity);
 #if HAVE_SUITESPARSE_UMFPACK
         } else if (solver_type == "umfpack") {
-            using MatrixType = std::remove_const_t<std::remove_reference_t<decltype(linearoperator_for_solver_->getmat())>>;
             linsolver_ = std::make_shared<Dune::UMFPack<MatrixType>>(linearoperator_for_solver_->getmat(), verbosity, false);
             direct_solver_ = true;
 #endif
@@ -223,7 +248,6 @@ namespace Dune
     recreateDirectSolver()
     {
 #if HAVE_SUITESPARSE_UMFPACK
-        using MatrixType = std::remove_const_t<std::remove_reference_t<decltype(linearoperator_for_solver_->getmat())>>;
         linsolver_ = std::make_shared<Dune::UMFPack<MatrixType>>(linearoperator_for_solver_->getmat(), 0, false);
 #else
         OPM_THROW(std::logic_error, "Direct solver specified, but the FlexibleSolver class was not compiled with SuiteSparse support.");
