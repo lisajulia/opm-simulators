@@ -43,10 +43,10 @@ To interact with the simulator in the embedded Python code, you can access four 
 	report_step = opm_embedded.current_report_step 
 
 
-- current_ecl_state: An instance of the EclipseState class - this is a representation of all static properties in the model, ranging from porosity to relperm tables. The content of the ecl state is immutable - you are not allowed to change the static properties at runtime.
+- current_ecl_state: An instance of the `EclipseState <common.html#opm.io.ecl_state.EclipseState>`_ class - this is a representation of all static properties in the model, ranging from porosity to relperm tables. The content of the ecl state is immutable - you are not allowed to change the static properties at runtime.
 
-- current_schedule: An instance of the Schedule class - this is a representation of all the content from the SCHEDULE section, notably all well and group information and the timestepping.
+- current_schedule: An instance of the `Schedule <common.html#opm.io.schedule.Schedule>`_ class - this is a representation of all the content from the SCHEDULE section, notably all well and group information and the timestepping.
 
 - current_report_step: This is an integer for the report step we are currently working on. Observe that the PYACTION is called for every simulator timestep, i.e. it will typically be called multiple times with the same value for the report step argument.
 
-- current_summary_state: An instance of the SummaryState class, this is where the current summary results of the simulator are stored. The SummaryState class has methods to get hold of well, group and general variables.
+- current_summary_state: An instance of the `SummaryState <common.html#opm.io.sim.SummaryState>`_ class, this is where the current summary results of the simulator are stored. The SummaryState class has methods to get hold of well, group and general variables.

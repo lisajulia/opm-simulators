@@ -112,10 +112,10 @@ conditions can be evaluated and changes applied.</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>current_ecl_state: An instance of the EclipseState class - this is a representation of all static properties in the model, ranging from porosity to relperm tables. The content of the ecl state is immutable - you are not allowed to change the static properties at runtime.</p></li>
-<li><p>current_schedule: An instance of the Schedule class - this is a representation of all the content from the SCHEDULE section, notably all well and group information and the timestepping.</p></li>
+<li><p>current_ecl_state: An instance of the <a class="reference external" href="common.html#opm.io.ecl_state.EclipseState">EclipseState</a> class - this is a representation of all static properties in the model, ranging from porosity to relperm tables. The content of the ecl state is immutable - you are not allowed to change the static properties at runtime.</p></li>
+<li><p>current_schedule: An instance of the <a class="reference external" href="common.html#opm.io.schedule.Schedule">Schedule</a> class - this is a representation of all the content from the SCHEDULE section, notably all well and group information and the timestepping.</p></li>
 <li><p>current_report_step: This is an integer for the report step we are currently working on. Observe that the PYACTION is called for every simulator timestep, i.e. it will typically be called multiple times with the same value for the report step argument.</p></li>
-<li><p>current_summary_state: An instance of the SummaryState class, this is where the current summary results of the simulator are stored. The SummaryState class has methods to get hold of well, group and general variables.</p></li>
+<li><p>current_summary_state: An instance of the <a class="reference external" href="common.html#opm.io.sim.SummaryState">SummaryState</a> class, this is where the current summary results of the simulator are stored. The SummaryState class has methods to get hold of well, group and general variables.</p></li>
 </ul>
 </section>
 
