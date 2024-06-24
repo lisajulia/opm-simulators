@@ -22,7 +22,7 @@ In order to enable the PYACTION keyword:
 .. code-block:: python
 
 	<PYACTION\_NAME>  <SINGLE/UNLIMITED> /
-	<pythonscript> /
+	<pythonscript> / -- path to the python script, relative to the location of the DATA-file
 
 3. You need to provide the Python script.
 
@@ -50,3 +50,5 @@ To interact with the simulator in the embedded Python code, you can access four 
 - current_report_step: This is an integer for the report step we are currently working on. Observe that the PYACTION is called for every simulator timestep, i.e. it will typically be called multiple times with the same value for the report step argument.
 
 - current_summary_state: An instance of the `SummaryState <common.html#opm.io.sim.SummaryState>`_ class, this is where the current summary results of the simulator are stored. The SummaryState class has methods to get hold of well, group and general variables.
+
+See also: PYACTION in the `reference manual <https://opm-project.org/?page_id=955>`_ for more information.

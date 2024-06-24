@@ -92,7 +92,7 @@ conditions can be evaluated and changes applied.</p>
 <li><p>The keyword PYACTION must be added to the SCHEDULE section:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">PYACTION</span>\<span class="n">_NAME</span><span class="o">&gt;</span>  <span class="o">&lt;</span><span class="n">SINGLE</span><span class="o">/</span><span class="n">UNLIMITED</span><span class="o">&gt;</span> <span class="o">/</span>
-<span class="o">&lt;</span><span class="n">pythonscript</span><span class="o">&gt;</span> <span class="o">/</span>
+<span class="o">&lt;</span><span class="n">pythonscript</span><span class="o">&gt;</span> <span class="o">/</span> <span class="o">--</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="n">python</span> <span class="n">script</span><span class="p">,</span> <span class="n">relative</span> <span class="n">to</span> <span class="n">the</span> <span class="n">location</span> <span class="n">of</span> <span class="n">the</span> <span class="n">DATA</span><span class="o">-</span><span class="n">file</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
@@ -117,6 +117,7 @@ conditions can be evaluated and changes applied.</p>
 <li><p>current_report_step: This is an integer for the report step we are currently working on. Observe that the PYACTION is called for every simulator timestep, i.e. it will typically be called multiple times with the same value for the report step argument.</p></li>
 <li><p>current_summary_state: An instance of the <a class="reference external" href="common.html#opm.io.sim.SummaryState">SummaryState</a> class, this is where the current summary results of the simulator are stored. The SummaryState class has methods to get hold of well, group and general variables.</p></li>
 </ul>
+<p>See also: PYACTION in the <a class="reference external" href="https://opm-project.org/?page_id=955">reference manual</a> for more information.</p>
 </section>
 
 
