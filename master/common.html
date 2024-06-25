@@ -80,6 +80,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#opm.io.schedule.Schedule.get_wells"><code class="docutils literal notranslate"><span class="pre">opm.io.schedule.Schedule.get_wells()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#Group"><code class="docutils literal notranslate"><span class="pre">Group</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Group.name"><code class="docutils literal notranslate"><span class="pre">Group.name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Group.name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">Group.name()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#ScheduleState"><code class="docutils literal notranslate"><span class="pre">ScheduleState</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ScheduleState.nupcol"><code class="docutils literal notranslate"><span class="pre">ScheduleState.nupcol()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ScheduleState.get_group"><code class="docutils literal notranslate"><span class="pre">ScheduleState.get_group()</span></code></a></li>
@@ -198,7 +204,7 @@ The SummaryState class has methods to get hold of well, group and general variab
 <dl class="py method">
 <dt class="sig sig-object py" id="opm.io.sim.SummaryState.elapsed">
 <span class="sig-prename descclassname"><span class="pre">opm.io.sim.SummaryState.</span></span><span class="sig-name descname"><span class="pre">elapsed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">double</span></span></span><a class="headerlink" href="#opm.io.sim.SummaryState.elapsed" title="Link to this definition"></a></dt>
-<dd><p>Return the elapsed time in seconds of the current simulation.</p>
+<dd><p>Returns the elapsed time in seconds of the current simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The elapsed time in seconds.</p>
@@ -209,7 +215,7 @@ The SummaryState class has methods to get hold of well, group and general variab
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">opm.io.sim.SummaryState.groups</span> <span class="pre">-&gt;</span> <span class="pre">list</span></span></dt>
-<dd><p>Return a list of strings containing all group names.</p>
+<dd><p>Returns a list of strings containing all group names.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list of strings representing all group names.</p>
@@ -220,7 +226,7 @@ The SummaryState class has methods to get hold of well, group and general variab
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">opm.io.sim.SummaryState.wells</span> <span class="pre">-&gt;</span> <span class="pre">list</span></span></dt>
-<dd><p>Return a list of strings containing all well names.</p>
+<dd><p>Returns a list of strings containing all well names.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list of strings representing all well names.</p>
@@ -340,7 +346,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="opm.io.schedule.Schedule.__getitem__">
 <span class="sig-prename descclassname"><span class="pre">opm.io.schedule.Schedule.</span></span><span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ScheduleState" title="ScheduleState"><span class="pre">ScheduleState</span></a></span></span><a class="headerlink" href="#opm.io.schedule.Schedule.__getitem__" title="Link to this definition"></a></dt>
-<dd><p>Return the ScheduleState at the given report step.</p>
+<dd><p>Returns the ScheduleState at the given report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>report_step</strong> (<em>int</em>) – The report step.</p>
@@ -512,6 +518,45 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="Group">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><a class="headerlink" href="#Group" title="Link to this definition"></a></dt>
+<dd><p>The Group class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Group.name">
+<span class="sig-prename descclassname"><span class="pre">Group.</span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Group.name" title="Link to this definition"></a></dt>
+<dd><p>Returns the name of this group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The name of this group.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-prename descclassname"><span class="pre">Group.</span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of wells in this group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of wells in this group.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-prename descclassname"><span class="pre">Group.</span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of all well names in this group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of all well names in this group.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="ScheduleState">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScheduleState</span></span><a class="headerlink" href="#ScheduleState" title="Link to this definition"></a></dt>
 <dd><p>The ScheduleState class.</p>
@@ -525,7 +570,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ScheduleState.get_group">
-<span class="sig-prename descclassname"><span class="pre">ScheduleState.</span></span><span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Group</span></span></span><a class="headerlink" href="#ScheduleState.get_group" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ScheduleState.</span></span><span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#Group" title="Group"><span class="pre">Group</span></a></span></span><a class="headerlink" href="#ScheduleState.get_group" title="Link to this definition"></a></dt>
 <dd><p>Get the group with the specified name from the schedule state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
