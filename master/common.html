@@ -82,8 +82,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Group"><code class="docutils literal notranslate"><span class="pre">Group</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Group.name"><code class="docutils literal notranslate"><span class="pre">Group.name()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">Group.name()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">Group.name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Group.num_wells"><code class="docutils literal notranslate"><span class="pre">Group.num_wells()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Group.well_names"><code class="docutils literal notranslate"><span class="pre">Group.well_names()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#ScheduleState"><code class="docutils literal notranslate"><span class="pre">ScheduleState</span></code></a><ul>
@@ -237,7 +237,7 @@ The SummaryState class has methods to get hold of well, group and general variab
 <dl class="py method">
 <dt class="sig sig-object py" id="opm.io.sim.SummaryState.has_well_var">
 <span class="sig-prename descclassname"><span class="pre">opm.io.sim.SummaryState.</span></span><span class="sig-name descname"><span class="pre">has_well_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">well_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#opm.io.sim.SummaryState.has_well_var" title="Link to this definition"></a></dt>
-<dd><p>Check if a well variable exists.</p>
+<dd><p>Checks if a well variable exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -254,7 +254,7 @@ The SummaryState class has methods to get hold of well, group and general variab
 <dl class="py method">
 <dt class="sig sig-object py" id="opm.io.sim.SummaryState.has_group_var">
 <span class="sig-prename descclassname"><span class="pre">opm.io.sim.SummaryState.</span></span><span class="sig-name descname"><span class="pre">has_group_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#opm.io.sim.SummaryState.has_group_var" title="Link to this definition"></a></dt>
-<dd><p>Check if a group variable exists.</p>
+<dd><p>Checks if a group variable exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -360,7 +360,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="opm.io.schedule.Schedule.shut_well">
 <span class="sig-prename descclassname"><span class="pre">opm.io.schedule.Schedule.</span></span><span class="sig-name descname"><span class="pre">shut_well</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">well_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#opm.io.schedule.Schedule.shut_well" title="Link to this definition"></a></dt>
-<dd><p>Shut down a well at a given report step.</p>
+<dd><p>Shuts down a well at a given report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -374,7 +374,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="id0">
 <span class="sig-prename descclassname"><span class="pre">opm.io.schedule.Schedule.</span></span><span class="sig-name descname"><span class="pre">shut_well</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">well_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
-<dd><p>Shut down a well at the current report step.</p>
+<dd><p>Shuts down a well at the current report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>well_name</strong> (<em>str</em>) – The name of the well to shut down.</p>
@@ -385,7 +385,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="opm.io.schedule.Schedule.open_well">
 <span class="sig-prename descclassname"><span class="pre">opm.io.schedule.Schedule.</span></span><span class="sig-name descname"><span class="pre">open_well</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">well_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#opm.io.schedule.Schedule.open_well" title="Link to this definition"></a></dt>
-<dd><p>Open a well at a given report step.</p>
+<dd><p>Opens a well at a given report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -402,7 +402,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="id1">
 <span class="sig-prename descclassname"><span class="pre">opm.io.schedule.Schedule.</span></span><span class="sig-name descname"><span class="pre">open_well</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">well_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
-<dd><p>Open a well at the current report step.</p>
+<dd><p>Opens a well at the current report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>well_name</strong> (<em>str</em>) – The name of the well to open.</p>
@@ -413,7 +413,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="opm.io.schedule.Schedule.stop_well">
 <span class="sig-prename descclassname"><span class="pre">opm.io.schedule.Schedule.</span></span><span class="sig-name descname"><span class="pre">stop_well</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">well_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#opm.io.schedule.Schedule.stop_well" title="Link to this definition"></a></dt>
-<dd><p>Stop a well at a given report step.</p>
+<dd><p>Stops a well at a given report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -430,7 +430,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="id2">
 <span class="sig-prename descclassname"><span class="pre">opm.io.schedule.Schedule.</span></span><span class="sig-name descname"><span class="pre">stop_well</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">well_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
-<dd><p>Stop a well at the current report step.</p>
+<dd><p>Stops a well at the current report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>well_name</strong> (<em>str</em>) – The name of the well to stop.</p>
@@ -535,8 +535,8 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-prename descclassname"><span class="pre">Group.</span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="Group.num_wells">
+<span class="sig-prename descclassname"><span class="pre">Group.</span></span><span class="sig-name descname"><span class="pre">num_wells</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Group.num_wells" title="Link to this definition"></a></dt>
 <dd><p>Returns the number of wells in this group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -546,8 +546,8 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-prename descclassname"><span class="pre">Group.</span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="Group.well_names">
+<span class="sig-prename descclassname"><span class="pre">Group.</span></span><span class="sig-name descname"><span class="pre">well_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Group.well_names" title="Link to this definition"></a></dt>
 <dd><p>Returns a list of all well names in this group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -602,7 +602,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="Well.isdefined">
 <span class="sig-prename descclassname"><span class="pre">Well.</span></span><span class="sig-name descname"><span class="pre">isdefined</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#Well.isdefined" title="Link to this definition"></a></dt>
-<dd><p>Check if the well is defined at a specific report step.</p>
+<dd><p>Checks if the well is defined at a specific report step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>report_step</strong> (<em>int</em>) – The report step to check for the well’s definition.</p>
@@ -616,7 +616,7 @@ The content of the EclipseState is immutable and may not be changed at runtime.<
 <dl class="py method">
 <dt class="sig sig-object py" id="Well.available_gctrl">
 <span class="sig-prename descclassname"><span class="pre">Well.</span></span><span class="sig-name descname"><span class="pre">available_gctrl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#Well.available_gctrl" title="Link to this definition"></a></dt>
-<dd><p>Check if the well is available for group control.</p>
+<dd><p>Checks if the well is available for group control.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if the well is available for group control, False otherwise.</p>
