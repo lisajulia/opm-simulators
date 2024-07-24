@@ -73,6 +73,10 @@ struct ParsingStrictness {
     using type = UndefinedProperty;
 };
 template<class TypeTag, class MyTypeTag>
+struct ActionParsingStrictness {
+    using type = UndefinedProperty;
+};
+template<class TypeTag, class MyTypeTag>
 struct InputSkipMode {
     using type = UndefinedProperty;
 };
@@ -149,6 +153,10 @@ struct EnableOpmRstFile<TypeTag, TTag::FlowBaseVanguard> {
 };
 template<class TypeTag>
 struct ParsingStrictness<TypeTag, TTag::FlowBaseVanguard> {
+    static constexpr auto value = "normal";
+};
+template<class TypeTag>
+struct ActionParsingStrictness<TypeTag, TTag::FlowBaseVanguard> {
     static constexpr auto value = "normal";
 };
 template<class TypeTag>
@@ -261,6 +269,10 @@ public:
              "high (stop for all errors) and "
              "low (as normal, except do not stop due to unsupported "
              "keywords even if marked critical");
+        Parameters::registerParam<TypeTag, Properties::ActionParsingStrictness>
+            ("Set strictness of parsing process for ActionX and PyAction. Available options are "
+             "normal (do not apply keywords that have not been tested for ActionX or PyAction) and "
+             "low (try to apply all keywords, beware: the simulation outcome might be incorrect).");
         Parameters::registerParam<TypeTag, Properties::InputSkipMode>
             ("Set compatibility mode for the SKIP100/SKIP300 keywords. Options are "
              "100 (skip SKIP100..ENDSKIP, keep SKIP300..ENDSKIP) [default], "
