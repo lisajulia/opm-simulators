@@ -70,7 +70,22 @@ void
 MultisegmentWellEval<FluidSystem,Indices>::
 initMatrixAndVectors()
 {
+    int num_perfs_this_process = baseif_.numLocalPerfs();
+    int num_perfs_whole_mswell = this->pw_info_.communication().sum(num_perfs_this_process);
+
+    std::vector<int> cells_for_perfs_whole_well(num_perfs_whole_mswell, 0.0);
+    for (int perf = 0; perf < num_perfs_this_process; perf++) {
+        cells_for_perfs_whole_well[this->pw_info_.localPerfToActivePerf(perf)] = baseif_.cells_global()[perf];
+    }
+    this->pw_info_.communication().sum(cells_for_perfs_whole_well.data(), num_perfs_whole_mswell);
+
     linSys_.init(baseif_.numLocalPerfs(),
+                 1000, // num_cells_all_processes_of_this_well
+                 // This number is used to create the size of the matrices dunBGlobal and duneCGlobal.
+                 // This number was was available at some point, but after some changes to the well code, now, it's not available anymore.
+                 // So I've put a pretty large number here...
+                 num_perfs_whole_mswell,
+                 cells_for_perfs_whole_well,
                  baseif_.cells(), segments_.inlets(),
                  segments_.perforations());
     primary_variables_.resize(this->numberOfSegments());
