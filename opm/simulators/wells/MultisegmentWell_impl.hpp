@@ -1811,6 +1811,40 @@ namespace Opm
         return converged;
     }
 
+    template<typename T, int innerM, int innerN>
+    std::vector<T> makeFlat(const Dune::BCRSMatrix<Dune::FieldMatrix<T,innerM,innerN>>& matrix) {
+        std::vector<T> flatStructure(matrix.nonzeroes() * innerM * innerN);
+        int i = 0;
+        // Iterate over all rows and columns of original matrix to set up sparsity scheme and the entries of the flat matrix
+        auto rowIt = matrix.begin();
+        for (; rowIt != matrix.end(); ++rowIt) {
+            auto colIt = rowIt->begin();
+            for (; colIt != rowIt->end(); ++colIt) {
+                for (int m = 0; m < innerM; m++) {
+                    for (int n = 0; n < innerN; n++) {
+                        flatStructure[i++] = ((*colIt)[m][n]);
+                    }
+                }
+            }
+        }
+        return flatStructure;
+    }
+    template<typename T, int innerM, int innerN>
+    void refill(Dune::BCRSMatrix<Dune::FieldMatrix<T,innerM,innerN>>& matrix, const std::vector<T>& flatStructure) {
+        int i = 0;
+        // Iterate over all rows and columns of original matrix to set up sparsity scheme and the entries of the flat matrix
+        auto rowIt = matrix.begin();
+        for (; rowIt != matrix.end(); ++rowIt) {
+            auto colIt = rowIt->begin();
+            for (; colIt != rowIt->end(); ++colIt) {
+                for (int m = 0; m < innerM; m++) {
+                    for (int n = 0; n < innerN; n++) {
+                        ((*colIt)[m][n]) = flatStructure[i++];
+                    }
+                }
+            }
+        }
+    }
 
     template<typename TypeTag>
     void
@@ -1970,6 +2004,32 @@ namespace Opm
         this->linSys_.sumDistributed(this->parallel_well_info_.communication());
         this->parallel_well_info_.communication().sum(this->ipr_a_.data(), this->ipr_a_.size());
         this->linSys_.createSolver();
+
+        auto flatB = makeFlat(this->linSys_.duneBGlobal_);
+        auto flatC = makeFlat(this->linSys_.duneCGlobal_);
+        this->parallel_well_info_.communication().sum(flatB.data(), flatB.size());
+        this->parallel_well_info_.communication().sum(flatC.data(), flatC.size());
+        refill(this->linSys_.duneBGlobal_, flatB);
+        refill(this->linSys_.duneCGlobal_, flatC);
+
+        // Open the file for writing
+        std::ofstream outFile("rank" + std::to_string(this->parallel_well_info_.communication().size()) + "-" + std::to_string(this->parallel_well_info_.communication().rank()) + ".txt");
+
+        if (outFile.is_open()) {
+            // Write the three matrices
+            Dune::printSparseMatrix(outFile, this->linSys_.duneBGlobal_, "duneBGlobal_", "B");
+            Dune::printSparseMatrix(outFile, this->linSys_.duneCGlobal_, "duneCGlobal_", "C");
+            Dune::printSparseMatrix(outFile, this->linSys_.duneD(), "duneD_", "D");
+            // Write the residual
+            auto residual = this->linSys_.residual();
+            outFile << "duneResidual:" << std::endl;
+            std::for_each(residual.begin(), residual.end(), [&outFile](const auto& entry) { outFile << entry << std::endl; });
+            outFile << std::endl;
+            outFile.close();
+        } else {
+            std::cerr << "Unable to open file." << std::endl;
+            throw;
+        }
     }
 
 
