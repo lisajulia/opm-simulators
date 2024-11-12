@@ -1904,6 +1904,7 @@ namespace Opm
                 if (local_perf_index < 0) // then the perforation is not on this process
                     continue;
                 const int cell_idx = this->well_cells_[local_perf_index];
+
                 const auto& int_quants = simulator.model().intensiveQuantities(cell_idx, /*timeIdx=*/ 0);
                 std::vector<EvalWell> mob(this->num_components_, 0.0);
                 getMobility(simulator, local_perf_index, mob, deferred_logger);
@@ -1937,7 +1938,7 @@ namespace Opm
                     this->connectionRates_[local_perf_index][comp_idx] = Base::restrictEval(cq_s_effective);
 
                     MultisegmentWellAssemble(*this).
-                        assemblePerforationEq(seg, local_perf_index, comp_idx, cq_s_effective, this->linSys_);
+                        assemblePerforationEq(seg, local_perf_index, perf, comp_idx, cq_s_effective, this->linSys_);
                 }
             }
 
@@ -1965,6 +1966,8 @@ namespace Opm
             }
         }
 
+        // accumulate resWell_ and duneD_ in parallel to get effects of all perforations (might be distributed)
+        this->linSys_.sumDistributed(this->parallel_well_info_.communication());
         this->parallel_well_info_.communication().sum(this->ipr_a_.data(), this->ipr_a_.size());
         this->linSys_.createSolver();
     }
