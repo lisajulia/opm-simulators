@@ -138,6 +138,7 @@ public:
     OffDiagMatWell duneC_;
     // "diagonal" matrix for the well. It has offdiagonal entries for inlets and outlets.
     DiagMatWell duneD_;
+    DiagMatWell duneDParallel_;
 
     /// \brief solver for diagonal matrix
     ///
@@ -146,6 +147,7 @@ public:
 
     // residuals of the well equations
     BVectorWell resWell_;
+    BVectorWell resWellParallel_;
 
     const MultisegmentWellGeneric<Scalar>& well_; //!< Reference to well
 

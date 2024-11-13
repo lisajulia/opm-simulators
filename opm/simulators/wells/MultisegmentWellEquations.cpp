@@ -65,6 +65,7 @@ init(const int numPerfs,
     duneB_.setBuildMode(OffDiagMatWell::row_wise);
     duneC_.setBuildMode(OffDiagMatWell::row_wise);
     duneD_.setBuildMode(DiagMatWell::row_wise);
+    duneDParallel_.setBuildMode(DiagMatWell::row_wise);
 
     // set the size and patterns for all the matrices and vectors
     // [A C^T    [x    =  [ res
@@ -78,6 +79,7 @@ init(const int numPerfs,
             nnz_d += 2 * inlets.size();
         }
         duneD_.setSize(well_.numberOfSegments(), well_.numberOfSegments(), nnz_d);
+        duneDParallel_.setSize(well_.numberOfSegments(), well_.numberOfSegments(), nnz_d);
     }
     duneB_.setSize(well_.numberOfSegments(), numPerfs, numPerfs);
     duneC_.setSize(well_.numberOfSegments(), numPerfs, numPerfs);
@@ -85,6 +87,27 @@ init(const int numPerfs,
     // we need to add the off diagonal ones
     for (auto row = duneD_.createbegin(),
               end = duneD_.createend(); row != end; ++row) {
+        // the number of the row corrspnds to the segment now
+        const int seg = row.index();
+        // adding the item related to outlet relation
+        const Segment& segment = well_.segmentSet()[seg];
+        const int outlet_segment_number = segment.outletSegment();
+        if (outlet_segment_number > 0) { // if there is a outlet_segment
+            const int outlet_segment_index = well_.segmentNumberToIndex(outlet_segment_number);
+            row.insert(outlet_segment_index);
+        }
+
+        // Add nonzeros for diagonal
+        row.insert(seg);
+
+        // insert the item related to its inlets
+        for (const int& inlet : segment_inlets[seg]) {
+            row.insert(inlet);
+        }
+    }
+
+    for (auto row = duneDParallel_.createbegin(),
+              end = duneDParallel_.createend(); row != end; ++row) {
         // the number of the row corrspnds to the segment now
         const int seg = row.index();
         // adding the item related to outlet relation
@@ -129,6 +152,7 @@ init(const int numPerfs,
     }
 
     resWell_.resize(well_.numberOfSegments());
+    resWellParallel_.resize(well_.numberOfSegments());
 
     // Store the global index of well perforated cells
     cells_ = cells;
@@ -140,7 +164,9 @@ void MultisegmentWellEquations<Scalar,numWellEq,numEq>::clear()
     duneB_ = 0.0;
     duneC_ = 0.0;
     duneD_ = 0.0;
+    duneDParallel_ = 0.0;
     resWell_ = 0.0;
+    resWellParallel_ = 0.0;
     duneDSolver_.reset();
 }
 
@@ -420,7 +446,9 @@ sumDistributed(Parallel::Communication comm)
     // accumulate resWell_ and duneD_ in parallel to get effects of all perforations (might be distributed)
     // we need to do this for all segments in the residual and on the diagonal of D 
     for (int seg = 0; seg < well_.numberOfSegments(); ++seg)
-        Opm::wellhelpers::sumDistributedWellEntries(duneD_[seg][seg], resWell_[seg], comm);
+        Opm::wellhelpers::sumDistributedWellEntries(duneDParallel_[seg][seg], resWellParallel_[seg], comm);
+    duneD_ += duneDParallel_;
+    resWell_ += resWellParallel_;
 }
 
 #define INSTANTIATE(T, numWellEq, numEq)                                                       \

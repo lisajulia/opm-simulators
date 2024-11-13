@@ -60,6 +60,12 @@ public:
         return eqns_.resWell_;
     }
 
+    //! \brief Returns a reference to the parallel part of the residual vector.
+    BVectorWell& residualParallel()
+    {
+        return eqns_.resWellParallel_;
+    }
+
     //! \brief Returns a reference to B matrix.
     OffDiatMatWell& B()
     {
@@ -76,6 +82,12 @@ public:
     DiagMatWell& D()
     {
         return eqns_.duneD_;
+    }
+
+    //! \brief Returns a reference to the parallel part of the D matrix.
+    DiagMatWell& DParallel()
+    {
+        return eqns_.duneDParallel_;
     }
 
 private:
@@ -406,7 +418,7 @@ assemblePerforationEq(const int seg,
     */
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
     // subtract sum of phase fluxes in the well equations.
-    eqns.residual()[seg][comp_idx] += cq_s_effective.value();
+    eqns.residualParallel()[seg][comp_idx] += cq_s_effective.value();
 
     // assemble the jacobians
     for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
@@ -414,7 +426,7 @@ assemblePerforationEq(const int seg,
         eqns.C()[seg][perf][pv_idx][comp_idx] -= cq_s_effective.derivative(pv_idx + Indices::numEq); // input in transformed matrix
 
         // the index name for the D should be eq_idx / pv_idx
-        eqns.D()[seg][seg][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx + Indices::numEq);
+        eqns.DParallel()[seg][seg][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx + Indices::numEq);
     }
 
     for (int pv_idx = 0; pv_idx < Indices::numEq; ++pv_idx) {
