@@ -24,6 +24,7 @@
 
 #include <opm/simulators/utils/ParallelCommunication.hpp>
 #include <opm/simulators/wells/ParallelWellInfo.hpp>
+#include <opm/simulators/wells/WellHelpers.hpp>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/istl/bcrsmatrix.hh>
@@ -151,6 +152,9 @@ public:
     OffDiagMatWell duneC_;
     // "diagonal" matrix for the well. It has offdiagonal entries for inlets and outlets.
     DiagMatWell duneD_;
+
+    // Wrapper for the parallel application of B for distributed wells
+    wellhelpers::ParallelStandardWellB<OffDiagMatWell> parallelB_;
 
     /// \brief solver for diagonal matrix
     ///

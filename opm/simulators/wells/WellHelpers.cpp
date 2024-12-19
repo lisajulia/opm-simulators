@@ -39,16 +39,16 @@
 namespace Opm {
 namespace wellhelpers {
 
-template<typename Scalar>
-ParallelStandardWellB<Scalar>::
-ParallelStandardWellB(const Matrix& B,
-                      const ParallelWellInfo<Scalar>& parallel_well_info)
+template<typename MatrixType>
+ParallelStandardWellB<MatrixType>::
+ParallelStandardWellB(const MatrixType& B,
+                      const ParallelWellInfo<typename MatrixType::field_type>& parallel_well_info)
     : B_(B), parallel_well_info_(parallel_well_info)
 {}
 
-template<typename Scalar>
+template<typename MatrixType>
 template<class X, class Y>
-void ParallelStandardWellB<Scalar>::
+void ParallelStandardWellB<MatrixType>::
 mv (const X& x, Y& y) const
 {
 #if !defined(NDEBUG) && HAVE_MPI
@@ -96,16 +96,16 @@ mv (const X& x, Y& y) const
         // with a vector followed by a parallel reduction. We do that
         // reduction to all ranks computing for the well to save the
         // broadcast when applying C^T.
-        using YField = typename Y::block_type::value_type;
+        using YField = typename Y::field_type;
         assert(y.size() == 1);
         this->parallel_well_info_.communication().template allreduce<std::plus<YField>>(y[0].container().data(),
                                                                                         y[0].container().size());
     }
 }
 
-template<typename Scalar>
+template<typename MatrixType>
 template<class X, class Y>
-void ParallelStandardWellB<Scalar>::
+void ParallelStandardWellB<MatrixType>::
 mmv (const X& x, Y& y) const
 {
     if (this->parallel_well_info_.communication().size() == 1)
@@ -224,18 +224,23 @@ using DMatrix = Dune::DynamicMatrix<Scalar>;
 using Comm = Parallel::Communication;
 
 #define INSTANTIATE(T,Dim)                                                      \
-    template void ParallelStandardWellB<T>::                                    \
+    template void ParallelStandardWellB<Dune::DynamicMatrix<T>>::               \
         mv(const Vec<T,Dim>&,DynVec<T>&) const;                                 \
-    template void ParallelStandardWellB<T>::                                    \
-        mmv(const Vec<T,Dim>&,DynVec<T>&) const;
+    template void ParallelStandardWellB<Dune::DynamicMatrix<T>>::               \
+        mmv(const Vec<T,Dim>&,DynVec<T>&) const;                                \
+    template void ParallelStandardWellB<Dune::FieldMatrix<T,Dim,Dim>>::         \
+        mv(const Vec<T,Dim>&,Dune::FieldVector<T,Dim>&) const;                  \
+    template void ParallelStandardWellB<Dune::FieldMatrix<T,Dim,Dim>>::         \
+        mmv(const Vec<T,Dim>&,Dune::FieldVector<T,Dim>&) const;
 
 #define INSTANTIATE_WE(T,Dim)                                                   \
+    template class ParallelStandardWellB<Dune::FieldMatrix<T,Dim,Dim>>;         \
     template void sumDistributedWellEntries(Dune::FieldMatrix<T,Dim,Dim>& mat,  \
                                             Dune::FieldVector<T,Dim>& vec,      \
                                             const Comm& comm);
 
 #define INSTANTIATE_TYPE(T)                                                     \
-    template class ParallelStandardWellB<T>;                                    \
+    template class ParallelStandardWellB<Dune::DynamicMatrix<T>>;               \
     template void sumDistributedWellEntries(Dune::DynamicMatrix<T>& mat,        \
                                             Dune::DynamicVector<T>& vec,        \
                                             const Comm& comm);                  \

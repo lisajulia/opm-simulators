@@ -140,7 +140,7 @@ private:
     DiagMatWell duneD_;
 
     // Wrapper for the parallel application of B for distributed wells
-    wellhelpers::ParallelStandardWellB<Scalar> parallelB_;
+    wellhelpers::ParallelStandardWellB<OffDiagMatWell> parallelB_;
 
     // residuals of the well equations
     BVectorWell resWell_;

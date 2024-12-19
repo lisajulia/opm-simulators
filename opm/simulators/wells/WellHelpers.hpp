@@ -46,15 +46,12 @@ namespace wellhelpers {
 /// matrix interface.
 ///
 /// \tparam Scalar The scalar used for the computation.
-template<typename Scalar>
+template<typename MatrixType>
 class ParallelStandardWellB
 {
 public:
-    using Block = Dune::DynamicMatrix<Scalar>;
-    using Matrix = Dune::BCRSMatrix<Block>;
-
-    ParallelStandardWellB(const Matrix& B,
-                          const ParallelWellInfo<Scalar>& parallel_well_info);
+    ParallelStandardWellB(const MatrixType& B,
+                          const ParallelWellInfo<typename MatrixType::field_type>& parallel_well_info);
 
     //! y = A x
     template<class X, class Y>
@@ -65,8 +62,8 @@ public:
     void mmv (const X& x, Y& y) const;
 
 private:
-    const Matrix& B_;
-    const ParallelWellInfo<Scalar>& parallel_well_info_;
+    const MatrixType& B_;
+    const ParallelWellInfo<typename MatrixType::field_type>& parallel_well_info_;
 };
 
 template<class Scalar>
