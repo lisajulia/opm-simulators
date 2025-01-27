@@ -1518,8 +1518,12 @@ namespace Opm
             }
 
             const auto report = getWellConvergence(simulator, well_state, Base::B_avg_, deferred_logger, relax_convergence);
-            if (report.converged()) {
-                converged = true;
+            converged = report.converged();
+            if (this->parallel_well_info_.communication().size() > 1 && converged != this->parallel_well_info_.communication().min(converged)) {
+                std::cout << fmt::format("Misalignment of the parallel simulation run in iterateWellEqWithControl - the well calculation succeeded on rank {} but failed on other ranks.", this->parallel_well_info_.communication().rank()) << std::endl;
+                converged = this->parallel_well_info_.communication().min(converged);
+            }
+            if (converged) {
                 break;
             }
 
@@ -1554,7 +1558,13 @@ namespace Opm
                     if (stagnate_count == 6) {
                         sstr << " well " << this->name() << " observes severe stagnation and/or oscillation. We relax the tolerance and check for convergence. \n";
                         const auto reportStag = getWellConvergence(simulator, well_state, Base::B_avg_, deferred_logger, true);
-                        if (reportStag.converged()) {
+                        auto reportStagConverged = reportStag.converged();
+                        if (this->parallel_well_info_.communication().size() > 1 && reportStagConverged != this->parallel_well_info_.communication().min(reportStagConverged)) {
+                            std::cout << fmt::format("Misalignment of the parallel simulation run in stagnation part of iterateWellEqWithControl - the well calculation succeeded on rank {} but failed on other ranks.", this->parallel_well_info_.communication().rank()) << std::endl;
+                            reportStagConverged = this->parallel_well_info_.communication().min(reportStagConverged);
+                        }
+
+                        if (reportStagConverged) {
                             converged = true;
                             sstr << " well " << this->name() << " manages to get converged with relaxed tolerances in " << it << " inner iterations";
                             deferred_logger.debug(sstr.str());
