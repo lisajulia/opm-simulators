@@ -1545,14 +1545,16 @@ namespace Opm
             const auto local_report = wellConv.first;
             converged = local_report.converged();
             if (this->parallel_well_info_.communication().size() > 1 && (converged != this->parallel_well_info_.communication().min(converged) || converged != this->parallel_well_info_.communication().max(converged)) ) {
-                const auto maximum_residual = wellConv.second;
-                std::cout << fmt::format("Misalignment of the parallel simulation run in iterateWellEqWithControl for well {} - the well calculation on rank {} retuned {}.", this->name(), this->parallel_well_info_.communication().rank(), converged) << std::endl;
-                std::cout << "maximum_residual: ";
-                std::for_each(maximum_residual.begin(), maximum_residual.end(), [](const auto& entry){std::cout << entry << ", ";});
-                std::cout << std::endl;
+                std::cout << fmt::format("Misalignment of the parallel simulation run in iterateWellEqWithControl for well {} - the well calculation on rank {} returned {}.", this->name(), this->parallel_well_info_.communication().rank(), converged) << std::endl;
             }
+            std::cout << fmt::format("On rank {}, for well {}, getWellConvergenceAndVec returned {}.", this->parallel_well_info_.communication().rank(), this->name(), converged) << std::endl;
+            std::cout << "maximum_residual: ";
+            std::for_each(wellConv.second.begin(), wellConv.second.end(), [](const auto& entry){std::cout << entry << ", ";});
+            std::cout << std::endl;
             ConvergenceReport report = gatherConvergenceReport(local_report, this->parallel_well_info_.communication());
             converged = report.converged();
+            std::cout << fmt::format("After gatherConvergenceReport on rank {}, converged is {}.", this->parallel_well_info_.communication().rank(), converged) << std::endl;
+
             if (converged) {
                 break;
             }
@@ -1590,15 +1592,16 @@ namespace Opm
                         const auto wellConvStag = getWellConvergenceAndVec(simulator, well_state, Base::B_avg_, deferred_logger, true);
                         const auto local_reportStag = wellConvStag.first;
                         auto reportStagConverged = local_reportStag.converged();
-                        if (this->parallel_well_info_.communication().size() > 1 && (converged != this->parallel_well_info_.communication().min(converged) || converged != this->parallel_well_info_.communication().max(converged)) ) {
-                            const auto maximum_residual = wellConvStag.second;
-                            std::cout << fmt::format("Misalignment of the parallel simulation run in stagnation part of iterateWellEqWithControl for well {} - the well calculation on rank {} returned {}.", this->name(), this->parallel_well_info_.communication().rank(), converged) << std::endl;
-                            std::cout << "maximum_residual: ";
-                            std::for_each(maximum_residual.begin(), maximum_residual.end(), [](const auto& entry){std::cout << entry << ", ";});
-                            std::cout << std::endl;
+                        if (this->parallel_well_info_.communication().size() > 1 && (reportStagConverged != this->parallel_well_info_.communication().min(reportStagConverged) || reportStagConverged != this->parallel_well_info_.communication().max(reportStagConverged)) ) {
+                            std::cout << fmt::format("Misalignment of the parallel simulation run in stagnation part of iterateWellEqWithControl for well {} - the well calculation on rank {} returned {}.", this->name(), this->parallel_well_info_.communication().rank(), reportStagConverged) << std::endl;
                         }
+                        std::cout << fmt::format("On rank {}, for well {}, getWellConvergenceAndVec returned {}.", this->parallel_well_info_.communication().rank(), this->name(), reportStagConverged) << std::endl;
+                        std::cout << "maximum_residual: ";
+                        std::for_each(wellConvStag.second.begin(), wellConvStag.second.end(), [](const auto& entry){std::cout << entry << ", ";});
+                        std::cout << std::endl;
                         ConvergenceReport reportStag = gatherConvergenceReport(local_reportStag, this->parallel_well_info_.communication());
                         reportStagConverged = reportStag.converged();
+                        std::cout << fmt::format("After gatherConvergenceReport on rank {}, converged is {}.", this->parallel_well_info_.communication().rank(), reportStagConverged) << std::endl;
 
                         if (reportStagConverged) {
                             converged = true;
@@ -1746,14 +1749,15 @@ namespace Opm
             const auto local_report = wellConv.first;
             converged = local_report.converged();
             if (this->parallel_well_info_.communication().size() > 1 && (converged != this->parallel_well_info_.communication().min(converged) || converged != this->parallel_well_info_.communication().max(converged)) ) {
-                const auto maximum_residual = wellConv.second;
                 std::cout << fmt::format("Misalignment of the parallel simulation run in iterateWellEqWithSwitching for well {} - the well calculation on rank {} returned {}.", this->name(), this->parallel_well_info_.communication().rank(), converged) << std::endl;
-                std::cout << "maximum_residual: ";
-                std::for_each(maximum_residual.begin(), maximum_residual.end(), [](const auto& entry){std::cout << entry << ", ";});
-                std::cout << std::endl;
             }
+            std::cout << fmt::format("On rank {}, for well {}, getWellConvergenceAndVec returned {}.", this->parallel_well_info_.communication().rank(), this->name(), converged) << std::endl;
+            std::cout << "maximum_residual: ";
+            std::for_each(wellConv.second.begin(), wellConv.second.end(), [](const auto& entry){std::cout << entry << ", ";});
+            std::cout << std::endl;
             ConvergenceReport report = gatherConvergenceReport(local_report, this->parallel_well_info_.communication());
             converged = report.converged();
+            std::cout << fmt::format("After gatherConvergenceReport on rank {}, converged is {}.", this->parallel_well_info_.communication().rank(), converged) << std::endl;
             if (converged) {
                 // if equations are sufficiently linear they might converge in less than min_its_after_switch
                 // in this case, make sure all constraints are satisfied before returning
