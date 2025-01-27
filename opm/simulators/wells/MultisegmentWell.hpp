@@ -101,6 +101,13 @@ namespace Opm {
                                              DeferredLogger& deferred_logger,
                                              const bool relax_tolerance) const override;
 
+        std::pair<ConvergenceReport, std::vector<typename Opm::WellInterface<TypeTag>::Scalar>>
+        getWellConvergenceAndVec(const Simulator& simulator,
+                                             const WellState<Scalar>& well_state,
+                                             const std::vector<Scalar>& B_avg,
+                                             DeferredLogger& deferred_logger,
+                                             const bool relax_tolerance) const;
+
         /// Ax = Ax - C D^-1 B x
         void apply(const BVector& x, BVector& Ax) const override;
         /// r = r - C D^-1 Rw

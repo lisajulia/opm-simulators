@@ -100,7 +100,8 @@ protected:
                             DeferredLogger& deferred_logger);
 
     /// check whether the well equations get converged for this well
-    ConvergenceReport getWellConvergence(const WellState<Scalar>& well_state,
+    std::pair<ConvergenceReport, std::vector<typename FluidSystem::Scalar>>
+    getWellConvergence(const WellState<Scalar>& well_state,
                                          const std::vector<Scalar>& B_avg,
                                          DeferredLogger& deferred_logger,
                                          const Scalar max_residual_allowed,

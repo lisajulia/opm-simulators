@@ -77,7 +77,7 @@ initMatrixAndVectors()
 }
 
 template<typename FluidSystem, typename Indices>
-ConvergenceReport
+std::pair<ConvergenceReport, std::vector<typename FluidSystem::Scalar>>
 MultisegmentWellEval<FluidSystem,Indices>::
 getWellConvergence(const WellState<Scalar>& well_state,
                    const std::vector<Scalar>& B_avg,
@@ -180,7 +180,7 @@ getWellConvergence(const WellState<Scalar>& well_state,
         }
     }
 
-    return report;
+    return std::make_pair(report, maximum_residual);
 }
 
 template<typename FluidSystem, typename Indices>
