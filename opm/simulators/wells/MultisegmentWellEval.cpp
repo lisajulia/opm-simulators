@@ -392,15 +392,21 @@ assembleAccelerationAndHydroPressureLosses(const int seg,
                                            WellState<Scalar>& well_state,
                                            const bool use_average_density)
 {
+    std::cout << "use_average_density? " << use_average_density << std::endl;
+    std::cout << "this->accelerationalPressureLossConsidered()? " << this->accelerationalPressureLossConsidered() << std::endl;
     if (this->accelerationalPressureLossConsidered()) {
         assembleAccelerationPressureLoss(seg, well_state);
     }
 
+    std::cout << "get hydro_pressure_drop_seg of segment " << seg << std::endl;
     // Since density derivatives are organized differently than what is required for assemblePressureEq,
     // this part needs to be assembled separately. Optionally use average density variant.
     const auto hydro_pressure_drop_seg = segments_.getHydroPressureLoss(seg, seg);
-    auto& ws = well_state.well(baseif_.indexOfWell());
+    // seg goes over all segments of the well
+    std::cout << "hydro_pressure_drop_seg.value() " << hydro_pressure_drop_seg.value() << std::endl;
+    auto& ws = well_state.well(baseif_.indexOfWell()); //indexOf well depends on where the well is located, but this seems correct
     auto& segments = ws.segments;
+    std::cout << "segments.size() of well with index " << baseif_.indexOfWell() << " is " << segments.size() << std::endl;
     if (!use_average_density){
         MultisegmentWellAssemble(baseif_).
             assembleHydroPressureLoss(seg, seg, hydro_pressure_drop_seg, linSys_);

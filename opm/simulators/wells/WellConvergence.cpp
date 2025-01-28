@@ -133,6 +133,7 @@ checkConvergencePolyMW(const std::vector<Scalar>& res,
       const int dummy_component = -1;
       using CR = ConvergenceReport;
       const auto wat_vel_failure_type = CR::WellFailure::Type::MassBalance;
+      // TODO: Check numPerfs()!
       for (int perf = 0; perf < well_.numPerfs(); ++perf) {
           const Scalar wat_vel_residual = res[Bhp + 1 + perf];
           if (std::isnan(wat_vel_residual)) {
@@ -147,8 +148,9 @@ checkConvergencePolyMW(const std::vector<Scalar>& res,
       // checking the convergence of the skin pressure
       const Scalar pskin_tol = 1000.; // 1000 pascal
       const auto pskin_failure_type = CR::WellFailure::Type::Pressure;
+      // Todo Check numPerfs!
       for (int perf = 0; perf < well_.numPerfs(); ++perf) {
-          const Scalar pskin_residual = res[Bhp + 1 + perf + well_.numPerfs()];
+          const Scalar pskin_residual = res[Bhp + 1 + perf + well_.numPerfs()]; // Todo Check numPerfs!
           if (std::isnan(pskin_residual)) {
               report.setWellFailed({pskin_failure_type, CR::Severity::NotANumber, dummy_component, well_.name()});
           } else if (pskin_residual > maxResidualAllowed * 10.) {
