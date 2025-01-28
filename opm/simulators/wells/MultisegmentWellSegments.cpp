@@ -127,6 +127,7 @@ MultisegmentWellSegments(const int numSegments,
         const Segment& outlet_segment = segment_set[segment_set.segmentNumberToIndex(outlet_segment_number)];
         const Scalar outlet_depth = outlet_segment.depth();
         depth_diffs_[seg] = segment_depth - outlet_depth;
+        std::cout << "depth_diffs_[" << seg << "] = " << depth_diffs_[seg] << ", segment_depth = " << segment_depth << ", outlet_depth = " << outlet_depth<< std::endl;
     }
 }
 
@@ -277,6 +278,7 @@ computeFluidProperties(const EvalWell& temperature,
 
         EvalWell volrat(0.0);
         for (int comp_idx = 0; comp_idx < well_.numComponents(); ++comp_idx) {
+            std::cout << "mix[" << comp_idx << "] = " << mix[comp_idx] << "b[" << comp_idx << "] = " << b[comp_idx] << std::endl;
             volrat += mix[comp_idx] / b[comp_idx];
         }
 
@@ -291,10 +293,11 @@ computeFluidProperties(const EvalWell& temperature,
 
         EvalWell density(0.0);
         for (int comp_idx = 0; comp_idx < well_.numComponents(); ++comp_idx) {
+            std::cout << "surf_dens[" << comp_idx << "] = " << surf_dens[comp_idx] << "mix_s[" << comp_idx << "] = " << mix_s[comp_idx] << std::endl;
             density += surf_dens[comp_idx] * mix_s[comp_idx];
         }
         densities_[seg] = density / volrat;
-
+        std::cout << "densities_[" << seg << "] = " << densities_[seg].value() << ", density = " << density << ", volrat = " << volrat << std::endl;;
         // calculate the mass rates
         mass_rates_[seg] = 0.;
         for (int comp_idx = 0; comp_idx < well_.numComponents(); ++comp_idx) {
@@ -338,6 +341,9 @@ MultisegmentWellSegments<FluidSystem,Indices>::
 getHydroPressureLoss(const int seg,
                      const int seg_density) const
 {
+    //something is wrong here! for the LAST segment!
+    std::cout << "getHydroPressureLoss" << std::endl;
+    std::cout << "densities_[" << seg_density << " ] = " << densities_[seg_density] << ", well_.gravity() = " << well_.gravity() << ", depth_diffs_[" << seg << "] = " << depth_diffs_[seg] << std::endl;
     return densities_[seg_density] * well_.gravity() * depth_diffs_[seg];
 }
 

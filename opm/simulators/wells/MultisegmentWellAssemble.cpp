@@ -261,12 +261,13 @@ assembleHydroPressureLoss(const int seg,
         It does *not* need communication.
     */
 
-    std::cout << "called assembleHydroPressureLoss" << std::endl;
+    std::cout << "called and used assembleHydroPressureLoss" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
-    //eqns.residual()[seg][SPres] -= hydro_pressure_drop_seg.value();
-    //for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
-    //    eqns.D()[seg][seg_density][SPres][pv_idx] -= hydro_pressure_drop_seg.derivative(pv_idx + Indices::numEq);
-    //}
+    //last entry is wrong!!!
+    eqns.residual()[seg][SPres] -= hydro_pressure_drop_seg.value();
+    for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
+        eqns.D()[seg][seg_density][SPres][pv_idx] -= hydro_pressure_drop_seg.derivative(pv_idx + Indices::numEq);
+    }
 
 }
 
