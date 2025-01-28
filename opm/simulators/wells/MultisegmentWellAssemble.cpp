@@ -209,10 +209,12 @@ assembleControlEq(const WellState<Scalar>& well_state,
 
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
     // using control_eq to update the matrix and residuals
-    eqns.residual()[0][SPres] = control_eq.value();
-    for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
-        eqns.D()[0][0][SPres][pv_idx] = control_eq.derivative(pv_idx + Indices::numEq);
-    }
+    //std::cout << "called assembleControlEq" << std::endl;
+
+    //eqns.residual()[0][SPres] = control_eq.value();
+    //for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
+    //    eqns.D()[0][0][SPres][pv_idx] = control_eq.derivative(pv_idx + Indices::numEq);
+    //}
 }
 
 template<class FluidSystem, class Indices>
@@ -234,16 +236,17 @@ assembleAccelerationTerm(const int seg_target,
         It does *not* need communication.
     */
 
+    std::cout << "called assembleAccelerationTerm" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
-    eqns.residual()[seg_target][SPres] -= accelerationTerm.value();
-    eqns.D()[seg_target][seg][SPres][SPres] -= accelerationTerm.derivative(SPres + Indices::numEq);
-    eqns.D()[seg_target][seg][SPres][WQTotal] -= accelerationTerm.derivative(WQTotal + Indices::numEq);
-    if constexpr (has_wfrac_variable) {
-        eqns.D()[seg_target][seg_upwind][SPres][WFrac] -= accelerationTerm.derivative(WFrac + Indices::numEq);
-    }
-    if constexpr (has_gfrac_variable) {
-        eqns.D()[seg_target][seg_upwind][SPres][GFrac] -= accelerationTerm.derivative(GFrac + Indices::numEq);
-    }
+    //eqns.residual()[seg_target][SPres] -= accelerationTerm.value();
+    //eqns.D()[seg_target][seg][SPres][SPres] -= accelerationTerm.derivative(SPres + Indices::numEq);
+    //eqns.D()[seg_target][seg][SPres][WQTotal] -= accelerationTerm.derivative(WQTotal + Indices::numEq);
+    //if constexpr (has_wfrac_variable) {
+    //    eqns.D()[seg_target][seg_upwind][SPres][WFrac] -= accelerationTerm.derivative(WFrac + Indices::numEq);
+    //}
+    //if constexpr (has_gfrac_variable) {
+    //    eqns.D()[seg_target][seg_upwind][SPres][GFrac] -= accelerationTerm.derivative(GFrac + Indices::numEq);
+    //}
 }                     
 
 template<class FluidSystem, class Indices>
@@ -258,6 +261,7 @@ assembleHydroPressureLoss(const int seg,
         It does *not* need communication.
     */
 
+    std::cout << "called and used assembleHydroPressureLoss" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
     eqns.residual()[seg][SPres] -= hydro_pressure_drop_seg.value();
     for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
@@ -276,11 +280,12 @@ assemblePressureEqExtraDerivatives(const int seg,
     /*
         This method does *not* need communication.
     */
+    std::cout << "called assemblePressureEqExtraDerivatives" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
     // disregard residual
     // Frac - derivatives are zero (they belong to upwind^2)
-    eqns.D()[seg][seg_upwind][SPres][SPres] += extra_derivatives.derivative(SPres + Indices::numEq);
-    eqns.D()[seg][seg_upwind][SPres][WQTotal] += extra_derivatives.derivative(WQTotal + Indices::numEq);
+    //eqns.D()[seg][seg_upwind][SPres][SPres] += extra_derivatives.derivative(SPres + Indices::numEq);
+    //eqns.D()[seg][seg_upwind][SPres][WQTotal] += extra_derivatives.derivative(WQTotal + Indices::numEq);
 }
 
 
@@ -296,22 +301,23 @@ assemblePressureEq(const int seg,
     /*
         This method does *not* need communication.
     */
+    std::cout << "called assemblePressureEq" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
-    eqns.residual()[seg][SPres] += pressure_equation.value();
-    eqns.D()[seg][seg][SPres][SPres] += pressure_equation.derivative(SPres + Indices::numEq);
-    eqns.D()[seg][seg][SPres][WQTotal] += pressure_equation.derivative(WQTotal + Indices::numEq);
-    if constexpr (has_wfrac_variable) {
-        eqns.D()[seg][seg_upwind][SPres][WFrac] += pressure_equation.derivative(WFrac + Indices::numEq);
-    }
-    if constexpr (has_gfrac_variable) {
-        eqns.D()[seg][seg_upwind][SPres][GFrac] += pressure_equation.derivative(GFrac + Indices::numEq);
-    }
+    //eqns.residual()[seg][SPres] += pressure_equation.value();
+    //eqns.D()[seg][seg][SPres][SPres] += pressure_equation.derivative(SPres + Indices::numEq);
+    //eqns.D()[seg][seg][SPres][WQTotal] += pressure_equation.derivative(WQTotal + Indices::numEq);
+    //if constexpr (has_wfrac_variable) {
+    //    eqns.D()[seg][seg_upwind][SPres][WFrac] += pressure_equation.derivative(WFrac + Indices::numEq);
+    //}
+    //if constexpr (has_gfrac_variable) {
+    //    eqns.D()[seg][seg_upwind][SPres][GFrac] += pressure_equation.derivative(GFrac + Indices::numEq);
+    //}
 
     // contribution from the outlet segment
-    eqns.residual()[seg][SPres] -= outlet_pressure.value();
-    for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
-        eqns.D()[seg][outlet_segment_index][SPres][pv_idx] -= outlet_pressure.derivative(pv_idx + Indices::numEq);
-    }
+    //eqns.residual()[seg][SPres] -= outlet_pressure.value();
+    //for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
+    //    eqns.D()[seg][outlet_segment_index][SPres][pv_idx] -= outlet_pressure.derivative(pv_idx + Indices::numEq);
+    //}
 }
 
 template<class FluidSystem, class Indices>
@@ -327,9 +333,10 @@ assembleTrivialEq(const int seg,
         and assembleICDPressureEq is responsible for the remaining segments.
         This method does *not* need communication.
     */
-    MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
-    eqns.residual()[seg][SPres] = value;
-    eqns.D()[seg][seg][SPres][WQTotal] = 1.;
+    std::cout << "called assembleTrivialEq" << std::endl;
+    //MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
+    //eqns.residual()[seg][SPres] = value;
+    //eqns.D()[seg][seg][SPres][WQTotal] = 1.;
 }
 
 template<class FluidSystem, class Indices>
@@ -343,11 +350,12 @@ assembleAccumulationTerm(const int seg,
         This method is called from MultisegmentWell::assembleWellEqWithoutIteration.
         It only assembles on the diagonal of D and it does *not* need communication.
     */
+    std::cout << "called assembleAccumulationTerm" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
-    eqns.residual()[seg][comp_idx] += accumulation_term.value();
-    for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
-      eqns.D()[seg][seg][comp_idx][pv_idx] += accumulation_term.derivative(pv_idx + Indices::numEq);
-    }
+    //eqns.residual()[seg][comp_idx] += accumulation_term.value();
+    //for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
+    //  eqns.D()[seg][seg][comp_idx][pv_idx] += accumulation_term.derivative(pv_idx + Indices::numEq);
+    //}
 }
 
 template<class FluidSystem, class Indices>
@@ -362,15 +370,16 @@ assembleOutflowTerm(const int seg,
         This method is called from MultisegmentWell::assembleWellEqWithoutIteration.
         It does *not* need communication.
     */
-    MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
-    eqns.residual()[seg][comp_idx] -= segment_rate.value();
-    eqns.D()[seg][seg][comp_idx][WQTotal] -= segment_rate.derivative(WQTotal + Indices::numEq);
-    if constexpr (has_wfrac_variable) {
-        eqns.D()[seg][seg_upwind][comp_idx][WFrac] -= segment_rate.derivative(WFrac + Indices::numEq);
-    }
-    if constexpr (has_gfrac_variable) {
-        eqns.D()[seg][seg_upwind][comp_idx][GFrac] -= segment_rate.derivative(GFrac + Indices::numEq);
-    }
+    std::cout << "called assembleOutflowTerm" << std::endl;
+    //MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
+    //eqns.residual()[seg][comp_idx] -= segment_rate.value();
+    //eqns.D()[seg][seg][comp_idx][WQTotal] -= segment_rate.derivative(WQTotal + Indices::numEq);
+    //if constexpr (has_wfrac_variable) {
+    //    eqns.D()[seg][seg_upwind][comp_idx][WFrac] -= segment_rate.derivative(WFrac + Indices::numEq);
+    //}
+    //if constexpr (has_gfrac_variable) {
+    //    eqns.D()[seg][seg_upwind][comp_idx][GFrac] -= segment_rate.derivative(GFrac + Indices::numEq);
+    //}
     // pressure derivative should be zero
 }
 
@@ -387,15 +396,16 @@ assembleInflowTerm(const int seg,
         This method is called from MultisegmentWell::assembleWellEqWithoutIteration.
         It does *not* need communication.
     */
+    std::cout << "called assembleInflowTerm" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
-    eqns.residual()[seg][comp_idx] += inlet_rate.value();
-    eqns.D()[seg][inlet][comp_idx][WQTotal] += inlet_rate.derivative(WQTotal + Indices::numEq);
-    if constexpr (has_wfrac_variable) {
-        eqns.D()[seg][inlet_upwind][comp_idx][WFrac] += inlet_rate.derivative(WFrac + Indices::numEq);
-    }
-    if constexpr (has_gfrac_variable) {
-        eqns.D()[seg][inlet_upwind][comp_idx][GFrac] += inlet_rate.derivative(GFrac + Indices::numEq);
-    }
+    //eqns.residual()[seg][comp_idx] += inlet_rate.value();
+    //eqns.D()[seg][inlet][comp_idx][WQTotal] += inlet_rate.derivative(WQTotal + Indices::numEq);
+    //if constexpr (has_wfrac_variable) {
+    //    eqns.D()[seg][inlet_upwind][comp_idx][WFrac] += inlet_rate.derivative(WFrac + Indices::numEq);
+    //}
+    //if constexpr (has_gfrac_variable) {
+    //    eqns.D()[seg][inlet_upwind][comp_idx][GFrac] += inlet_rate.derivative(GFrac + Indices::numEq);
+    //}
     // pressure derivative should be zero
 }
 
@@ -414,25 +424,26 @@ assemblePerforationEq(const int seg,
         and after calling this function, the diagonal of the matrix D and the residual need to be combined by calling
         the function MultisegmentWellEquations::sumDistributed.
     */
+    std::cout << "called assemblePerforationEq" << std::endl;
     MultisegmentWellEquationAccess<Scalar,numWellEq,Indices::numEq> eqns(eqns1);
     // subtract sum of phase fluxes in the well equations.
-    eqns.residual()[seg][comp_idx] += cq_s_effective.value();
+    //eqns.residual()[seg][comp_idx] += cq_s_effective.value();
 
     // assemble the jacobians
-    for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
-        // also need to consider the efficiency factor when manipulating the jacobians.
-        eqns.C()[seg][local_perf_index][pv_idx][comp_idx] -= cq_s_effective.derivative(pv_idx + Indices::numEq); // input in transformed matrix
-        eqns.CGlobal()[seg][global_cell_idx][pv_idx][comp_idx] -= cq_s_effective.derivative(pv_idx + Indices::numEq); // input in transformed matrix
+//    for (int pv_idx = 0; pv_idx < numWellEq; ++pv_idx) {
+//        // also need to consider the efficiency factor when manipulating the jacobians.
+//        eqns.C()[seg][local_perf_index][pv_idx][comp_idx] -= cq_s_effective.derivative(pv_idx + Indices::numEq); // input in transformed matrix
+//        eqns.CGlobal()[seg][global_cell_idx][pv_idx][comp_idx] -= cq_s_effective.derivative(pv_idx + Indices::numEq); // input in transformed matrix
+//
+//        // the index name for the D should be eq_idx / pv_idx
+//        eqns.D()[seg][seg][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx + Indices::numEq);
+//    }
 
-        // the index name for the D should be eq_idx / pv_idx
-        eqns.D()[seg][seg][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx + Indices::numEq);
-    }
-
-    for (int pv_idx = 0; pv_idx < Indices::numEq; ++pv_idx) {
-        // also need to consider the efficiency factor when manipulating the jacobians.
-        eqns.B()[seg][local_perf_index][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx);
-        eqns.BGlobal()[seg][global_cell_idx][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx);
-    }
+//    for (int pv_idx = 0; pv_idx < Indices::numEq; ++pv_idx) {
+//        // also need to consider the efficiency factor when manipulating the jacobians.
+//        eqns.B()[seg][local_perf_index][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx);
+//        eqns.BGlobal()[seg][global_cell_idx][comp_idx][pv_idx] += cq_s_effective.derivative(pv_idx);
+//    }
 }
 
 template<class Scalar>
