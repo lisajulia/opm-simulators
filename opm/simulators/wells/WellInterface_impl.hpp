@@ -1599,6 +1599,10 @@ namespace Opm
         for (int perf = 0; perf < nperf; ++perf) {
             total_tw += this->well_index_[perf];
         }
+        std::cout << "for well " << this->name() << ": total_tw before: " << total_tw << std::endl;
+        total_tw = this->parallelWellInfo().communication().sum(total_tw);
+        std::cout << "for well " << this->name() << ": total_tw after: " << total_tw << std::endl;
+
         for (int perf = 0; perf < nperf; ++perf) {
             const int cell_idx = this->well_cells_[perf];
             const auto& intQuants = simulator.model().intensiveQuantities(cell_idx, /*timeIdx=*/0);
