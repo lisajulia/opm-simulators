@@ -75,8 +75,10 @@ applyCleaning(const WellInterfaceGeneric<Scalar>& well,
 {
     const auto& connections = well.wellEcl().getConnections();
     const auto nperf = well.numPerfs();
+    std::cout << "applyCleaning in WellFilterCake: connections.size() = " << connections.size() << ", nperf = " << nperf << std::endl;
     for (int perf = 0; perf < nperf; ++perf) {
         const auto perf_ecl_index = well.perforationData()[perf].ecl_index;
+        std::cout << "for perf " << perf << " we get perf_ecl_index " << perf_ecl_index << std::endl;
         const auto& connection = connections[perf_ecl_index];
         if (!connection.filterCakeActive())
             continue;
@@ -138,8 +140,10 @@ updateSkinFactorsAndMultipliers(const WellInterfaceGeneric<Scalar>& well,
     const auto conc = ws.filtrate_conc;
     const std::size_t np = well_state.numPhases();
 
+    std::cout << "updateSkinFactorsAndMultipliers in WellFilterCake: connections.size() = " << connections.size() << ", nperf = " << nperf << std::endl;
     for (int perf = 0; perf < nperf; ++perf) {
         const auto perf_ecl_index = well.perforationData()[perf].ecl_index;
+        std::cout << "for perf " << perf << " we get perf_ecl_index " << perf_ecl_index << std::endl;
         const auto& connection = connections[perf_ecl_index];
         if (!connection.filterCakeActive())
             continue;
@@ -216,7 +220,9 @@ updateMultiplier(const Conn& connection, const int perf)
 {
     const auto denom = connection.ctfProperties().peaceman_denom;
     const auto denom2 = denom + skin_factor_[perf];
+    std::cout << "update inj_fc_multiplier_ for perf " << perf << ", value before: " << inj_fc_multiplier_[perf];
     inj_fc_multiplier_[perf] = denom / denom2;
+    std::cout << ", value after: " << inj_fc_multiplier_[perf] << std::endl;
 }
 
 template class WellFilterCake<double>;
