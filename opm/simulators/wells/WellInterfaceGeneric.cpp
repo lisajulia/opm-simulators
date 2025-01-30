@@ -88,15 +88,15 @@ WellInterfaceGeneric(const Well& well,
 
     // We do not want to count SHUT perforations here, so
     // it would be wrong to use wells.getConnections().size().
-    // This is the number_of_perforations_ on this process only!
-    number_of_perforations_ = perf_data.size();
+    // This is the local_number_of_perforations_ on this process only!
+    local_number_of_perforations_ = perf_data.size();
 
     // perforations related
     {
-        well_cells_.resize(number_of_perforations_);
-        well_cells_global_.resize(number_of_perforations_);
-        well_index_.resize(number_of_perforations_);
-        saturation_table_number_.resize(number_of_perforations_);
+        well_cells_.resize(local_number_of_perforations_);
+        well_cells_global_.resize(local_number_of_perforations_);
+        well_index_.resize(local_number_of_perforations_);
+        saturation_table_number_.resize(local_number_of_perforations_);
         int perf = 0;
         for (const auto& pd : perf_data) {
             //todo: this is the cell index I use for the matrices BCD, is that global or local? I hope it is global! otherwise I have big problems!!
@@ -459,7 +459,7 @@ setWellEfficiencyFactor(const Scalar efficiency_factor)
 template<class Scalar>
 void WellInterfaceGeneric<Scalar>::setRepRadiusPerfLength()
 {
-    const int nperf = number_of_perforations_;
+    const int nperf = local_number_of_perforations_;
 
     perf_rep_radius_.clear();
     perf_length_.clear();
@@ -532,7 +532,7 @@ template<class Scalar>
 void WellInterfaceGeneric<Scalar>::
 updatePerforatedCell(std::vector<bool>& is_cell_perforated)
 {
-    for (int perf_idx = 0; perf_idx < number_of_perforations_; ++perf_idx) {
+    for (int perf_idx = 0; perf_idx < local_number_of_perforations_; ++perf_idx) {
         is_cell_perforated[well_cells_[perf_idx]] = true;
     }
 }
