@@ -1148,6 +1148,16 @@ namespace Opm
             }
             // Now communicate the cell_idx to the processes that do not have the first perforation
             cell_idx = this->parallel_well_info_.communication().max(cell_idx);
+
+            int cell_idx_broadcast = cell_idx = this->well_cells_[0];
+            cell_idx_broadcast = this->pw_info_.broadcastFirstPerforationValue(cell_idx_broadcast);
+
+            if (cell_idx_broadcast != cell_idx) {
+                OPM_THROW(std::runtime_error, "cell_idx != cell_idx_broadcast in computeSegmentFluidProperties");
+            } else {
+                std::cout << "its fine" << std::endl;
+            }
+
             const auto& intQuants = simulator.model().intensiveQuantities(cell_idx, /*timeIdx=*/0);
             const auto& fs = intQuants.fluidState();
             temperature.setValue(fs.temperature(FluidSystem::oilPhaseIdx).value());
@@ -2181,6 +2191,16 @@ namespace Opm
             }
             // Now communicate the cell_idx to the processes that do not have the first perforation
             cell_idx = this->parallel_well_info_.communication().max(cell_idx);
+
+            int cell_idx_broadcast = cell_idx = this->well_cells_[0];
+            cell_idx_broadcast = this->pw_info_.broadcastFirstPerforationValue(cell_idx_broadcast);
+
+            if (cell_idx_broadcast != cell_idx) {
+                OPM_THROW(std::runtime_error, "cell_idx != cell_idx_broadcast in getSegmentSurfaceVolume");
+            } else {
+                std::cout << "its fine" << std::endl;
+            }
+
             const auto& intQuants = simulator.model().intensiveQuantities(cell_idx, /*timeIdx=*/0);
             const auto& fs = intQuants.fluidState();
             temperature.setValue(fs.temperature(FluidSystem::oilPhaseIdx).value());
