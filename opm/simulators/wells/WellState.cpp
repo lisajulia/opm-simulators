@@ -319,6 +319,7 @@ void WellState<Scalar>::init(const std::vector<Scalar>& cellPressures,
                     perf_data.phase_rates[this->numPhases()*perf + p] = ws.surface_rates[p] / Scalar(global_num_perf_this_well);
                 }
             }
+            //todo: check this access with [perf]
             perf_data.pressure[perf] = cellPressures[well_perf_data[w][perf].cell_index];
         }
     }
