@@ -1139,8 +1139,15 @@ namespace Opm
         // TODO: later to investigate how to handle the pvt region
         int pvt_region_index;
         {
-            // using the first perforated cell
-            const int cell_idx = this->well_cells_[0];
+            // using the first perforated cell, so we look for global index 0
+            const int local_perf_index = this->pw_info_.globalToLocal(0);// This will be either -1 or 0, 0 if the perforation is on this process or -1 if it is not
+            assert(local_perf_index == 0 or local_perf_index == -1);
+            int cell_idx = -1;
+            if (local_perf_index == 0) {
+                cell_idx = this->well_cells_[0];
+            }
+            // Now communicate the cell_idx to the processes that do not have the first perforation
+            cell_idx = this->parallel_well_info_.communication().max(cell_idx);
             const auto& intQuants = simulator.model().intensiveQuantities(cell_idx, /*timeIdx=*/0);
             const auto& fs = intQuants.fluidState();
             temperature.setValue(fs.temperature(FluidSystem::oilPhaseIdx).value());
@@ -2165,9 +2172,15 @@ namespace Opm
         EvalWell saltConcentration;
         int pvt_region_index;
         {
-            // using the pvt region of first perforated cell
             // TODO: it should be a member of the WellInterface, initialized properly
-            const int cell_idx = this->well_cells_[0];
+            // using the pvt region of first perforated cell, so we look for global index 0
+            const int local_perf_index = this->pw_info_.globalToLocal(0);// This will be either -1 or 0, 0 if the perforation is on this process or -1 if it is not
+            int cell_idx = -1;
+            if (local_perf_index == 0) {
+                cell_idx = this->well_cells_[0];
+            }
+            // Now communicate the cell_idx to the processes that do not have the first perforation
+            cell_idx = this->parallel_well_info_.communication().max(cell_idx);
             const auto& intQuants = simulator.model().intensiveQuantities(cell_idx, /*timeIdx=*/0);
             const auto& fs = intQuants.fluidState();
             temperature.setValue(fs.temperature(FluidSystem::oilPhaseIdx).value());
