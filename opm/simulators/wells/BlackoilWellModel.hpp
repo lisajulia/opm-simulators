@@ -212,6 +212,19 @@ template<class Scalar> class WellContributions;
                         .tracerModel().getWellSolTracerRates();
                     const auto& mswTracerRates = simulator_.problem()
                         .tracerModel().getMswTracerRates();
+                    for (const auto& entry : tracerRates) {
+                        std::cout << "{ (" << entry.first.first << ", " << entry.first.second << ") : " << entry.second << " }" << std::endl;
+                    }
+                    for (const auto& entry : freeTracerRates) {
+                        std::cout << "{ (" << entry.first.first << ", " << entry.first.second << ") : " << entry.second << " }" << std::endl;
+                    }
+                    for (const auto& entry : solTracerRates) {
+                        std::cout << "{ (" << entry.first.first << ", " << entry.first.second << ") : " << entry.second << " }" << std::endl;
+                    }
+                    for (const auto& entry : mswTracerRates) {
+                        const auto& key = entry.first;
+                        std::cout << "{ (" << std::get<0>(entry.first) << ", " << std::get<1>(entry.first) << ", " << std::get<2>(entry.first) << ") : " << entry.second << " }" << std::endl;
+                    }
 
                     this->assignWellTracerRates(wsrpt, tracerRates);
                     this->assignWellTracerRates(wsrpt, freeTracerRates);

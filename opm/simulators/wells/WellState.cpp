@@ -522,6 +522,7 @@ WellState<Scalar>::report(const int* globalCellIdxMap,
     data::Wells res;
     for (std::size_t well_index = 0; well_index < this->size(); ++well_index) {
         const auto& ws = this->well(well_index);
+        std::cout << "Getting report for well " << ws.name << std::endl;
         if ((ws.status == Well::Status::SHUT) && !wasDynamicallyClosed(well_index))
         {
             continue;
@@ -607,7 +608,11 @@ WellState<Scalar>::report(const int* globalCellIdxMap,
             std::vector<data::Connection> connections;
 
             reportConnections(connections, pu, well_index, globalCellIdxMap);
+            std::cout << "well.connections.size() " << well.connections.size() << std::endl;
+            std::cout << "call reportConnections and then gatherVectorsOnRoot" << std::endl;
             gatherVectorsOnRoot(connections, well.connections, pwinfo.communication());
+            std::cout << "well.connections.size() " << well.connections.size() << std::endl;
+            std::cout << "connections.size() " << connections.size() << std::endl;
         }
 
         const auto nseg = ws.segments.size();

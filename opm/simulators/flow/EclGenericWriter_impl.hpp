@@ -32,6 +32,7 @@
 #include <opm/input/eclipse/EclipseState/Grid/RegionSetMatcher.hpp>
 #include <opm/input/eclipse/EclipseState/SummaryConfig/SummaryConfig.hpp>
 
+#include <opm/output/data/Wells.hpp>
 #include <opm/input/eclipse/Schedule/Action/State.hpp>
 #include <opm/input/eclipse/Schedule/Schedule.hpp>
 #include <opm/input/eclipse/Schedule/SummaryState.hpp>
@@ -639,21 +640,44 @@ evalSummary(const int                                            reportStepNum,
     if (collectOnIORank_.isIORank()) {
         const auto& summary = eclIO_->summary();
 
+        // This will collect everything on rank 0, from everywhere?
+        std::cout << "this->collectOnIORank_.isParallel() ? " << this->collectOnIORank_.isParallel() << std::endl;
         const auto& wellData = this->collectOnIORank_.isParallel()
             ? this->collectOnIORank_.globalWellData()
             : localWellData;
-
+        std::cout << "Looking at wellData:" << std::endl;
+        std::cout << wellData.json().to_string() << std::endl;
         const auto& wbpData = this->collectOnIORank_.isParallel()
             ? this->collectOnIORank_.globalWBPData()
             : localWBPData;
+        for (const auto& [key, value] : wbpData.values) {
+            std::cout << "Looking at " << key << " WellBlockAveragePressures data:" << std::endl;
+            std::cout << value[Opm::data::WellBlockAvgPress::Quantity::WBP] << std::endl;
+            std::cout << value[Opm::data::WellBlockAvgPress::Quantity::WBP4] << std::endl;
+            std::cout << value[Opm::data::WellBlockAvgPress::Quantity::WBP5] << std::endl;
+            std::cout << value[Opm::data::WellBlockAvgPress::Quantity::WBP9] << std::endl;
+
+        }
 
         const auto& groupAndNetworkData = this->collectOnIORank_.isParallel()
             ? this->collectOnIORank_.globalGroupAndNetworkData()
             : localGroupAndNetworkData;
+        std::cout << "Looking at groupAndNetworkData:" << std::endl;
+        std::cout << groupAndNetworkData.json().to_string() << std::endl;
 
         const auto& aquiferData = this->collectOnIORank_.isParallel()
             ? this->collectOnIORank_.globalAquiferData()
             : localAquiferData;
+        std::cout << "Looking at aquiferData:" << std::endl;
+        for (auto const& [key,val] : aquiferData) {
+            std::cout << key << ": " << std::endl;
+            std::cout << "val.aquiferID = " << val.aquiferID << std::endl;
+            std::cout << "val.pressure = " << val.pressure << std::endl;
+            std::cout << "val.fluxRate = " << val.fluxRate << std::endl;
+            std::cout << "val.volume = " << val.volume << std::endl;
+            std::cout << "val.initPressure = " << val.initPressure << std::endl;
+            std::cout << "val.datumDepth = " << val.datumDepth << std::endl;
+        }
 
         summary.eval(summaryState,
                      reportStepNum,

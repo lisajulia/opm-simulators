@@ -1206,6 +1206,7 @@ namespace Opm
                 const Scalar rho = FluidSystem::referenceDensity( phaseIdx, Base::pvtRegionIdx() );
                 total_ipr_mass_rate += ipr_rate * rho;
             }
+            std::cout << "total_ipr_mass_rate: " << total_ipr_mass_rate << std::endl;
             if ( (this->isProducer() && total_ipr_mass_rate < 0.) || (this->isInjector() && total_ipr_mass_rate > 0.) ) {
                 this->operability_status_.operable_under_only_bhp_limit = false;
             }

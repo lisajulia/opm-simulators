@@ -416,7 +416,8 @@ public:
         this->outputModule_->outputErrorLog(simulator_.gridView().comm());
 
         // output using eclWriter if enabled
-        auto localWellData = simulator_.problem().wellModel().wellData();
+        const auto& localWellModel = simulator_.problem().wellModel();
+        auto localWellData = localWellModel.wellData();
         auto localGroupAndNetworkData = simulator_.problem().wellModel()
             .groupAndNetworkData(reportStepNum);
 
