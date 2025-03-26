@@ -527,6 +527,19 @@ template<class Scalar>
 void ParallelWellInfo<Scalar>::setActiveToLocalMap(const std::unordered_map<int,int> activeToLocalMap) const {
     //activeToLocalMap_ is marked as mutable
     activeToLocalMap_ = activeToLocalMap;
+    for (const auto& [key, value] : activeToLocalMap) {
+        localToActiveMap_[value] = key;
+    }
+}
+
+template<class Scalar>
+int ParallelWellInfo<Scalar>::localToActive(std::size_t localIndex) const {
+    if (comm_->size() == 1)
+        return localIndex;
+    auto it = localToActiveMap_.find(localIndex);
+    if (it == localToActiveMap_.end())
+        return -1; // Active index not found
+    return it->second;
 }
 
 template<class Scalar>

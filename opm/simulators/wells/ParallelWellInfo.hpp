@@ -219,6 +219,7 @@ public:
 
     void setActiveToLocalMap(const std::unordered_map<int,int> activeToLocalMap) const;
     int activeToLocal(const int activeIndex) const;
+    int localToActive(std::size_t localIndex) const;
     int globalToLocal(const int globalIndex) const;
     int localToGlobal(std::size_t localIndex) const;
 
@@ -346,6 +347,7 @@ private:
     std::unique_ptr<GlobalPerfContainerFactory<Scalar>> globalPerfCont_;
 
     mutable std::unordered_map<int,int> activeToLocalMap_;
+    mutable std::unordered_map<int,int> localToActiveMap_;
 };
 
 /// \brief Class checking that all connections are on active cells
