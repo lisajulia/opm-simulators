@@ -182,30 +182,42 @@ apply(const BVector& x, BVector& Ax) const
 
     parallelB_.mv(x, Bx);
 
+    //std::cout << "Bx:" << std::endl;
+    //std::for_each(Bx.begin(), Bx.end(), [](const auto& entry) {std::cout << entry << std::endl;});
+
     // It is ok to do this on each process instead of only on one,
     // because the other processes would remain idle while waiting for
     // the single process to complete the computation.
     // invDBx = duneD^-1 * Bx_
     const BVectorWell invDBx = mswellhelpers::applyUMFPack(*duneDSolver_, Bx);
+    //std::cout << "invDBx:" << std::endl;
+    //std::for_each(invDBx.begin(), invDBx.end(), [](const auto& entry) {std::cout << entry << std::endl;});
     if (Ax.size() > 0) {
         // Ax = Ax - duneC_^T * invDBx
         duneC_.mmtv(invDBx,Ax);
     }
+    //std::cout << "Ax:" << std::endl;
+    //std::for_each(Ax.begin(), Ax.end(), [](const auto& entry) {std::cout << entry << std::endl;});
 }
 
 template<class Scalar, int numWellEq, int numEq>
 void MultisegmentWellEquations<Scalar,numWellEq,numEq>::
 apply(BVector& r) const
 {
+    // It is ok to do this on each process instead of only on one,
+    // because the other processes would remain idle while waiting for
+    // the single process to complete the computation.
+    // invDrw_ = duneD^-1 * resWell_
+    const BVectorWell invDrw = mswellhelpers::applyUMFPack(*duneDSolver_, resWell_);
+    //std::cout << "invDrw:" << std::endl;
+    //std::for_each(invDrw.begin(), invDrw.end(), [](const auto& entry) {std::cout << entry << std::endl;});
     if (r.size() > 0) {
-        // It is ok to do this on each process instead of only on one,
-        // because the other processes would remain idle while waiting for
-        // the single process to complete the computation.
-        // invDrw_ = duneD^-1 * resWell_
-        const BVectorWell invDrw = mswellhelpers::applyUMFPack(*duneDSolver_, resWell_);
         // r = r - duneC_^T * invDrw
         duneC_.mmtv(invDrw, r);
     }
+    // This has dimension of open perforations
+    //std::cout << "r:" << std::endl;
+    //std::for_each(r.begin(), r.end(), [](const auto& entry) {std::cout << entry << std::endl;});
 }
 
 template<class Scalar, int numWellEq, int numEq>
