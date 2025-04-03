@@ -843,8 +843,10 @@ namespace Opm
     MultisegmentWell<TypeTag>::
     addWellContributions(SparseMatrixAdapter& jacobian) const
     {
+        //std::cout << "addWellContributions" << std::endl;
         if (this->number_of_local_perforations_ == 0) {
             // This is correct, because if there are no perforation on this process, it cannot add contributions to the jacobian
+            //std::cout << "do not addWellContributions for this->number_of_local_perforations_ = 0" << std::endl;
             return;
         }
         this->linSys_.extract(jacobian);
@@ -860,8 +862,10 @@ namespace Opm
                              const bool use_well_weights,
                              const WellState<Scalar>& well_state) const
     {
+        //std::cout << "addWellPressureEquations" << std::endl;
         if (this->number_of_local_perforations_ == 0) {
             // this is correct, if there are no perforations on this process, it cannot contribute to the cpr pressure matrix
+            //std::cout << "do not addWellPressureEquations for this->number_of_local_perforations_ = 0" << std::endl;
             return;
         }
         // Add the pressure contribution to the cpr system for the well
@@ -901,6 +905,28 @@ namespace Opm
         if (local_perf_index < 0 or this->cell_perforation_pressure_diffs_.size() == 0)
             return;
 
+        //std::cout << "pressure_cell: " << pressure_cell << std::endl;
+        //std::cout << "rs: " << rs << std::endl;
+        //std::cout << "rv: " << rv << std::endl;
+        //std::cout << "perf: " << perf << std::endl;
+        //std::cout << "local_perf_index: " << local_perf_index << std::endl;
+        //std::cout << "segment_pressure: " << segment_pressure << std::endl;
+        //std::cout << "segment_density: " << segment_density << std::endl;
+        //std::cout << "allow_cf: " << allow_cf << std::endl;
+
+        //std::cout << "b_perfcells: ";
+        //std::for_each(b_perfcells.begin(), b_perfcells.end(), [](const auto& entry) {std::cout << entry << ", ";});
+        //std::cout << std::endl;
+        //std::cout << "mob_perfcells: ";
+        //std::for_each(mob_perfcells.begin(), mob_perfcells.end(), [](const auto& entry) {std::cout << entry << ", ";});
+        //std::cout << std::endl;
+        //std::cout << "Tw: ";
+        //std::for_each(Tw.begin(), Tw.end(), [](const auto& entry) {std::cout << entry << ", ";});
+        //std::cout << std::endl;
+        //std::cout << "cmix_s: ";
+        //std::for_each(cmix_s.begin(), cmix_s.end(), [](const auto& entry) {std::cout << entry << ", ";});
+        //std::cout << std::endl;
+
         // pressure difference between the segment and the perforation
         const Value perf_seg_press_diff = this->gravity() * segment_density *
                                           this->segments_.local_perforation_depth_diff(local_perf_index);
@@ -916,6 +942,9 @@ namespace Opm
 
         // Pressure drawdown (also used to determine direction of flow)
         const Value drawdown = cell_press_at_perf - perf_press;
+        //std::cout << "perf_seg_press_diff: " << perf_seg_press_diff << std::endl;
+        //std::cout << "cell_perf_press_diff: " << cell_perf_press_diff << std::endl;
+        //std::cout << "drawdown: " << drawdown << std::endl;
 
         // producing perforations
         if (drawdown > 0.0) {
@@ -1974,6 +2003,8 @@ namespace Opm
         // Open the file for writing
         std::ofstream outFile(this->name() + "-rank" + std::to_string(this->parallel_well_info_.communication().size()) + "-" + std::to_string(this->parallel_well_info_.communication().rank()) + ".txt", std::ios::app);
 
+        if (MultisegmentWellAssemble(*this).get_counter() == 10)
+            std::cout << "---------------------------------- Correct until now! ----------------------------------" << std::endl;
         if (outFile.is_open()) {
             // Write the three matrices
             Dune::printSparseMatrix(outFile, this->linSys_.duneBGlobal_, "duneBGlobal_", "B");
@@ -1989,6 +2020,7 @@ namespace Opm
             std::cerr << "Unable to open file." << std::endl;
             throw;
         }
+        MultisegmentWellAssemble(*this).increment();
     }
 
 
