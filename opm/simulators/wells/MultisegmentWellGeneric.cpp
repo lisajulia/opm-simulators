@@ -58,9 +58,16 @@ scaleSegmentRatesWithWellRates(const std::vector<std::vector<int>>& segment_inle
     auto& segments = ws.segments;
     auto& segment_rates = segments.rates;
     Scalar sumTw = 0;
+    std::cout << "segments.pressure.size() = " << segments.pressure.size() << std::endl;
+    std::cout << "segment_rates.size() = " << segment_rates.size() << std::endl;
+    std::for_each(segment_rates.begin(), segment_rates.end(), [](const auto& entry) {std::cout << entry << ", ";});
+    std::cout << "ws.surface_rates.size() = " << ws.surface_rates.size() << std::endl;
+    std::for_each(ws.surface_rates.begin(), ws.surface_rates.end(), [](const auto& entry) {std::cout << entry << ", ";});
+    // segment_rates is a global variable, so we do not need communication here
     bool calculateSumTw = std::any_of(segment_rates.begin(), segment_rates.end(), [](const auto& unscaled_top_seg_rate) {
         return std::abs(unscaled_top_seg_rate) <= 1e-12;
     });
+    std::cout << "calculateSumTw?" << calculateSumTw << std::endl;
     if (calculateSumTw) {
         // Due to various reasons, the well/top segment rate can be zero for this phase.
         // We can not scale this rate directly. The following approach is used to initialize the segment rates.
@@ -70,9 +77,13 @@ scaleSegmentRatesWithWellRates(const std::vector<std::vector<int>>& segment_inle
         // We need to communicate here to scale the perf_phaserate_scaled with the contribution of all segments
         sumTw = ws.parallel_info.get().communication().sum(sumTw);
     }
+    std::cout << "sumTw = " << sumTw << std::endl;
+    std::cout << "will now loop over the phases, that are " << baseif_.numPhases() << std::endl;
     for (int phase = 0; phase < baseif_.numPhases(); ++phase) {
         const Scalar unscaled_top_seg_rate = segment_rates[phase];
+        std::cout << "unscaled_top_seg_rate = " << unscaled_top_seg_rate << std::endl;
         const Scalar well_phase_rate = ws.surface_rates[phase];
+        std::cout << "well_phase_rate = " << well_phase_rate << std::endl;
         if (std::abs(unscaled_top_seg_rate) > 1e-12) {
             for (int seg = 0; seg < numberOfSegments(); ++seg) {
                 segment_rates[baseif_.numPhases() * seg + phase] *= well_phase_rate / unscaled_top_seg_rate;
@@ -87,6 +98,7 @@ scaleSegmentRatesWithWellRates(const std::vector<std::vector<int>>& segment_inle
             }
 
             std::vector<Scalar> rates;
+            std::cout << "will calculateSegmentRates now" << std::endl;
             WellState<Scalar>::calculateSegmentRates(ws.parallel_info,
                                                      segment_inlets,
                                                      segment_perforations,
@@ -106,6 +118,7 @@ scaleSegmentPressuresWithBhp(WellState<Scalar>& well_state) const
 {
     auto& ws = well_state.well(baseif_.indexOfWell());
     auto& segments = ws.segments;
+    std::cout << "will scale the segment pressure now with the bhp " << ws.bhp << std::endl;
     segments.scale_pressure(ws.bhp);
 }
 

@@ -559,6 +559,7 @@ namespace Opm
             const Scalar sign = well_copy.well_ecl_.isInjector() ? 1.0 : -1.0;
             for (int phase = 0; phase < np; ++phase) {
                 ws.surface_rates[phase] = sign * ws.well_potentials[phase];
+                std::cout << "set ws.surface_rates[" << phase << "] = " << ws.surface_rates[phase] << std::endl;
             }
         }
         well_copy.scaleSegmentRatesWithWellRates(this->segments_.inlets(),
@@ -713,6 +714,7 @@ namespace Opm
                                               max_pressure_change);
 
         const auto& summary_state = simulator.vanguard().summaryState();
+        std::cout << "will call copyToWellState" << std::endl;
         this->primary_variables_.copyToWellState(*this, getRefDensity(),
                                                  well_state,
                                                  summary_state,

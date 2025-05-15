@@ -302,7 +302,7 @@ copyToWellState(const MultisegmentWellGeneric<Scalar>& mswell,
         for (int p = 0; p < well_.numPhases(); ++p) {
             const Scalar phase_rate = g_total * fractions[p];
             segment_rates[seg * well_.numPhases() + p] = phase_rate;
-            if (seg == 0) { // top segment
+            if (seg == 0) { // top
                 ws.surface_rates[p] = phase_rate;
             }
         }

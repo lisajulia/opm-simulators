@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -111,8 +112,12 @@ std::size_t SegmentState<Scalar>::size() const
 template<class Scalar>
 void SegmentState<Scalar>::scale_pressure(const Scalar bhp)
 {
-    if (this->empty())
+    if (this->empty()) {
+        std::cout << "Tried to pressure scale empty SegmentState" << std::endl;
+        std::cout << "this->rates.size() = " << this->rates.size() << std::endl;
+        std::cout << "this->pressure.size() = " << this->pressure.size() << std::endl;
         throw std::logic_error("Tried to pressure scale empty SegmentState");
+    }
 
     const auto pressure_change = bhp - this->pressure[0];
 

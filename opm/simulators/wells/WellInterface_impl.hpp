@@ -1218,6 +1218,7 @@ namespace Opm
                 // we try to provide a better intial well rate
                 // using the well potentials
                 Scalar total_rate = std::accumulate(rates.begin(), rates.end(), 0.0);
+                std::cout << "total_rate: " << total_rate << std::endl;
                 if (total_rate <= 0.0)
                     ws.surface_rates = ws.well_potentials;
 
@@ -1639,7 +1640,7 @@ namespace Opm
             this->computeWellRatesWithBhp(simulator, bhp_limit, well_q_s, deferred_logger);
             // Remember of we evaluated the rates at (approx.) 1 bar or not.
             rates_evaluated_at_1bar = (bhp_limit < 1.1 * unit::barsa);
-            // Check that no rates are positive.
+            // Check that no rates are positive. This call to std::any_of does not need communication.
             if (std::any_of(well_q_s.begin(), well_q_s.end(), [](Scalar q) { return q > 0.0; })) {
                 // Did we evaluate at 1 bar? If not, then we can try again at 1 bar.
                 if (!rates_evaluated_at_1bar) {

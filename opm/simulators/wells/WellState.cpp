@@ -691,6 +691,10 @@ void WellState<Scalar>::initWellStateMSWell(const std::vector<Well>& wells_ecl,
             const WellConnections& completion_set = well_ecl.getConnections();
             // number of segment for this single well
             ws.segments = SegmentState<Scalar>{np, segment_set};
+            std::cout << "segment state set for well " << well_ecl.name() << std::endl;
+            auto& segment_rates = ws.segments.rates;
+            std::cout << "segment_rates.size() = " << segment_rates.size() << std::endl;
+            std::for_each(segment_rates.begin(), segment_rates.end(), [](const auto& entry) {std::cout << entry << ", ";});
             const int well_nseg = segment_set.size();
             int n_activeperf = 0;
             int n_activeperf_local = 0;
@@ -814,8 +818,10 @@ void WellState<Scalar>::initWellStateMSWell(const std::vector<Well>& wells_ecl,
                 ws.parallel_info.get().communication().sum(perforation_rates.data(), perforation_rates.size());
                 ws.parallel_info.get().communication().sum(perforation_pressures.data(), perforation_pressures.size());
             }
-
+            std::cout << "will calculateSegmentRates for " << well_ecl.name() << std::endl;
             calculateSegmentRates(ws.parallel_info, segment_inlets, segment_perforations, perforation_rates, np, 0 /* top segment */, ws.segments.rates);
+            std::cout << "segment_rates:" << std::endl;
+            std::for_each(segment_rates.begin(), segment_rates.end(), [](const auto& entry) {std::cout << entry << ", ";});
 
             // for the segment pressure, the segment pressure is the same with the first perforation belongs to the segment
             // if there is no perforation associated with this segment, it uses the pressure from the outlet segment
@@ -938,7 +944,15 @@ calculateSegmentRates(const ParallelWellInfo<Scalar>& pw_info,
                       const int np, const int segment,
                       std::vector<Scalar>& segment_rates)
 {
-    calculateSegmentRatesBeforeSum(pw_info, segment_inlets, segment_perforations, perforation_rates, np, segment, segment_rates);
+    try {
+        calculateSegmentRatesBeforeSum(pw_info, segment_inlets, segment_perforations, perforation_rates, np, segment, segment_rates);
+    } catch (const std::exception& e) {
+        std::cout << "Caught in calculateSegmentRatesBeforeSum: " <<e.what() << std::endl;
+        throw e;  // Rethrow the same exception
+    } catch (...) {
+        std::cout << "Something else caught in calculateSegmentRatesBeforeSum" << std::endl;
+        throw;  // Rethrow the same exception
+    }
     pw_info.communication().sum(segment_rates.data(), segment_rates.size());
 }
 

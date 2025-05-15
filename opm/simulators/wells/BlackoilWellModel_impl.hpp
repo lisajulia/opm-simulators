@@ -1911,6 +1911,7 @@ namespace Opm {
             if (ws.production_cmode ==  Well::ProducerCMode::GRUP ||
                 ws.injection_cmode == Well::InjectorCMode::GRUP)
             {
+                std::cout << "will call updateWellStateWithTarget for well " << well->name() << std::endl;
                 well->updateWellStateWithTarget(simulator_, this->groupState(),
                                                 this->wellState(), deferred_logger);
             }

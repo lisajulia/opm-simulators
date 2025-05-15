@@ -20,6 +20,7 @@
 */
 
 #include <config.h>
+#include <iostream>
 
 #include <opm/simulators/wells/WellGroupConstraints.hpp>
 
@@ -165,6 +166,7 @@ checkGroupConstraints(WellState<Scalar>& well_state,
                 const int np = well_state.numPhases();
                 for (int p = 0; p<np; ++p) {
                     ws.surface_rates[p] *= group_constraint.second;
+                    std::cout << "multplied ws.surface_rates[" << p << "], now it is " << ws.surface_rates[p] << std::endl;
                 }
             }
             return group_constraint.first;
@@ -196,6 +198,7 @@ checkGroupConstraints(WellState<Scalar>& well_state,
                 const int np = well_state.numPhases();
                 for (int p = 0; p<np; ++p) {
                     ws.surface_rates[p] *= group_constraint.second;
+                    std::cout << "multplied ws.surface_rates[" << p << "], now it is " << ws.surface_rates[p] << std::endl;
                 }
             }
             return group_constraint.first;
