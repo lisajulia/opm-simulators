@@ -1679,6 +1679,7 @@ namespace Opm
             converged = report.converged();
             if (this->parallel_well_info_.communication().size() > 1 &&
                 this->parallel_well_info_.communication().max(converged) != this->parallel_well_info_.communication().min(converged)) {
+                std::cout << fmt::format("Misalignment of the parallel simulation run in iterateWellEqWithSwitching - the well calculation for well {} succeeded some ranks but failed on other ranks.", this->name()) << std::endl;
                 OPM_THROW(std::runtime_error, fmt::format("Misalignment of the parallel simulation run in iterateWellEqWithSwitching - the well calculation for well {} succeeded some ranks but failed on other ranks.", this->name()));
             }
             if (converged) {
